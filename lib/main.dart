@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'pages/home_page.dart';
-import 'pages/finance_page.dart';
-import 'pages/settings_page.dart';
+import 'package:flutter_application_1/navigation/nav_items.dart';
+import 'package:flutter_application_1/widgets/app_bar_custom.dart';
+import 'package:flutter_application_1/widgets/app_navigation_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Meu App',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.indigo,
-      ),
+      title: 'Finance',
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo),
       home: const MainLayout(),
     );
   }
@@ -33,60 +30,21 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = const [
-    HomePage(),
-    FinancePage(),
-    SettingsPage(),
-  ];
-
-  void selectPage(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-    Navigator.of(context).pop(); // fecha o drawer
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Dashboard"),
+      appBar: AppBarCustom(title: appNavItems[selectedIndex].pageItem.appBarTitle),
+      body: appNavItems[selectedIndex].pageItem.page,
+      bottomNavigationBar: AppNavigationBar(
+        items: appNavItems,
+        currentIndex: selectedIndex,
+        bottomBarTitle: appNavItems[selectedIndex].pageItem.bottomBarTitle,
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.indigo),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  'Meu App',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text("Home"),
-              selected: selectedIndex == 0,
-              onTap: () => selectPage(0),
-            ),
-            ListTile(
-              leading: const Icon(Icons.attach_money),
-              title: const Text("Financeiro"),
-              selected: selectedIndex == 1,
-              onTap: () => selectPage(1),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text("Configurações"),
-              selected: selectedIndex == 2,
-              onTap: () => selectPage(2),
-            ),
-          ],
-        ),
-      ),
-      body: pages[selectedIndex],
     );
   }
 }
