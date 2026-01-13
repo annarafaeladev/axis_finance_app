@@ -42,16 +42,6 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      appBarTitle: "Contas Fixa",
-      page: FinanceFixedPage(),
-      bottomBarTitle: "Contas Fixa",
-    ),
-
-    icon: Icons.credit_card_outlined,
-    selectedIcon: Icons.credit_card,
-  ),
-  NavItem(
-    pageItem: PageItem(
       appBarTitle: "Cartão",
       page: CreditCardPage(),
       bottomBarTitle: "Cartão",
@@ -62,14 +52,15 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      appBarTitle: "Investimentos",
-      page: CreditCardPage(),
-      bottomBarTitle: "Investimentos",
+      appBarTitle: "Contas Fixa",
+      page: FinanceFixedPage(),
+      bottomBarTitle: "Contas Fixa",
     ),
 
-    icon: Icons.credit_card_outlined,
-    selectedIcon: Icons.credit_card,
+    icon: Icons.attach_money,
+    selectedIcon: Icons.attach_money,
   ),
+
   NavItem(
     pageItem: PageItem(
       appBarTitle: "Reserva",
@@ -80,23 +71,33 @@ const appNavItems = [
     icon: Icons.security,
     selectedIcon: Icons.security,
   ),
-  NavItem(
-    pageItem: PageItem(
-      appBarTitle: "Relatórios",
-      page: CreditCardPage(),
-      bottomBarTitle: "Relatórios",
-    ),
+  // NavItem(
+  //   pageItem: PageItem(
+  //     appBarTitle: "Investimentos",
+  //     page: CreditCardPage(),
+  //     bottomBarTitle: "Investimentos",
+  //   ),
 
-    icon: Icons.credit_card_outlined,
-    selectedIcon: Icons.credit_card,
-  ),
+  //   icon: Icons.credit_card_outlined,
+  //   selectedIcon: Icons.credit_card,
+  // ),
+  // NavItem(
+  //   pageItem: PageItem(
+  //     appBarTitle: "Relatórios",
+  //     page: CreditCardPage(),
+  //     bottomBarTitle: "Relatórios",
+  //   ),
+
+  //   icon: Icons.task,
+  //   selectedIcon: Icons.task,
+  // ),
   NavItem(
     pageItem: PageItem(
       appBarTitle: "Configurações",
       page: SettingsPage(),
       bottomBarTitle: "Configurações",
     ),
-    icon: Icons.more_horiz,
-    selectedIcon: Icons.more_horiz,
+    icon: Icons.settings,
+    selectedIcon: Icons.settings,
   ),
 ];
