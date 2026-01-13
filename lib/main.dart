@@ -49,14 +49,11 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarCustom(
-        title: appNavItems[selectedIndex].pageItem.appBarTitle,
-      ),
       body: Column(
         children: [
           FinanceHeader(),
-
           Expanded(child: appNavItems[selectedIndex].pageItem.page),
+        
         ],
       ),
 
