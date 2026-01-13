@@ -24,7 +24,7 @@ class FinanceHeader extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "R\$ 5.000,00",
+                  "R\$ 0.000,00",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ],
