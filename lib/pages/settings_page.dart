@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/content_page_header.dart';
 import 'package:flutter_application_1/widgets/finance_settings_form.dart';
 
 class SettingsPage extends StatelessWidget {
