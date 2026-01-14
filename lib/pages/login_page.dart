@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -13,8 +15,26 @@ class LoginPage extends StatelessWidget {
     ],
   );
 
+  Future<void> saveUser(GoogleSignInAccount account, String accessToken) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final data = {
+      'id': account.id,
+      'name': account.displayName,
+      'email': account.email,
+      'photo': account.photoUrl,
+      'accessToken': accessToken,
+    };
+
+    print('profile: $data');
+
+    await prefs.setString('user', jsonEncode(data));
+  }
+
   Future<void> _handleSignIn(BuildContext context) async {
     try {
+      await _googleSignIn.signOut();
+
       final account = await _googleSignIn.signIn();
 
       if (account == null) return; // usuário cancelou
@@ -26,15 +46,14 @@ class LoginPage extends StatelessWidget {
         throw Exception('Falha ao obter accessToken');
       }
 
-      // Aqui você já tem o token OAuth real
-      print('Access Token: $accessToken');
+      await saveUser(account, accessToken);
 
       // Depois você pode navegar para o app
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao logar: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao logar: $e')));
     }
   }
 
@@ -89,9 +108,8 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 32),
             ],
           ),
-        ), 
+        ),
       ),
     );
   }
 }
-                                      
