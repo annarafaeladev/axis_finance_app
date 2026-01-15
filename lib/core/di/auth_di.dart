@@ -1,3 +1,5 @@
+import 'package:flutter_application_1/core/auth/access_token_provider.dart';
+import 'package:flutter_application_1/core/auth/user_access_token_provider.dart';
 import 'package:flutter_application_1/core/di/injector.dart';
 import 'package:flutter_application_1/core/storage/local_storage.dart';
 import 'package:flutter_application_1/features/auth/data/datasource/google_auth_datasource.dart';
@@ -40,6 +42,11 @@ void registerAuth() {
     () => UserData(getIt<UserRepository>()),
   );
 
+//AccessTokenProvider
+  getIt.registerLazySingleton<AccessTokenProvider>(
+    () => UserAccessTokenProvider(getIt<UserData>()),
+  );
+  
   // Controller
   getIt.registerFactory(
     () => AuthController(getIt<LoginWithGoogle>(), getIt<LogoutWithGoogle>()),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/di/injector.dart';
 import 'package:flutter_application_1/features/auth/presentation/auth_controller.dart';
+import 'package:flutter_application_1/features/finance/presentation/controllers/finance_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,18 +12,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final AuthController controller = getIt<AuthController>();
+  final FinanceController financeController = getIt<FinanceController>();
 
   Future<void> _login() async {
     try {
       await controller.login();
-       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login realizado com sucesso")),
-      );
+
+      await financeController.initFinance();
+
       Navigator.pushReplacementNamed(context, "/home");
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
