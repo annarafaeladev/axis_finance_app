@@ -38,6 +38,7 @@ dependencies:
   shared_preferences: ^2.2.2
   get_it: ^9.2.0
   dio: ^5.9.0
+  sign_in_button: ^4.0.1
 
 dev_dependencies:
   flutter_test:

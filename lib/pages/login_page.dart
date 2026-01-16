@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 import 'package:flutter_application_1/core/di/injector.dart';
 import 'package:flutter_application_1/features/auth/presentation/auth_controller.dart';
 import 'package:flutter_application_1/features/finance/presentation/controllers/finance_controller.dart';
@@ -30,25 +31,75 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            const Spacer(),
-            const Text("Bem-vindo", style: TextStyle(fontSize: 32)),
-            const Spacer(),
+    final theme = Theme.of(context);
 
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _login,
-                child: const Text("Entrar com Google"),
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const Spacer(),
+
+              // Logo ou ícone do app
+              Icon(
+                Icons.account_circle_outlined,
+                size: 96,
+                color: theme.primaryColor,
               ),
-            ),
-          ],
+
+              const SizedBox(height: 24),
+
+              Text('Bem-vindo', style: theme.textTheme.headlineLarge),
+
+              const SizedBox(height: 8),
+
+              Text(
+                'Faça login para continuar',
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+
+              const SizedBox(height: 48),
+
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: SignInButton(
+                  Buttons.google,
+                  text: 'Entrar com Google',
+                  elevation: 2,
+                  loadingIndicatorColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  onPressed: _login,
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              Text(
+                'Ao continuar, você concorda com nossos termos de uso.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+
+              const Spacer(),
+
+              Text(
+                '© 2026 • Axis App',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.outline,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );

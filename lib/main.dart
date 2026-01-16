@@ -6,7 +6,7 @@ import 'package:flutter_application_1/widgets/app_bar_custom.dart';
 import 'package:flutter_application_1/widgets/app_header.dart';
 import 'package:flutter_application_1/widgets/app_navigation_bar.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await setupDependencies();
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         '/': (_) => LoginPage(),
         '/home': (_) => MainLayout(), // sua home
       },
-      // home: const MainLayout(),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: Colors.indigo,
