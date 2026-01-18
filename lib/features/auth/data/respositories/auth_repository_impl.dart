@@ -13,7 +13,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User> loginWithGoogle() async {
     final user = await google.signIn();
-    await storage.save('user', user.toJson());
+    await storage.saveMap('user', user.toJson());
     return user;
   }
   

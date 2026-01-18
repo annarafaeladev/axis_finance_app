@@ -10,7 +10,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<User?> getUser() async {
-    final json = await storage.get('user');
+    final json = await storage.getMap('user');
     if (json == null) return null;
 
     final model = UserModel.fromJson(json);

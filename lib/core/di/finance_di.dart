@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_application_1/core/auth/access_token_provider.dart';
 import 'package:flutter_application_1/core/di/injector.dart';
+import 'package:flutter_application_1/core/storage/local_storage.dart';
 import 'package:flutter_application_1/features/finance/data/datasources/google_sheets_api.dart';
 import 'package:flutter_application_1/features/finance/data/repositories/finance_repository_impl.dart';
 import 'package:flutter_application_1/features/finance/domain/repositories/finance_repository.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_application_1/features/finance/presentation/controllers/
 void registerFinance() {
   // Datasource
   getIt.registerLazySingleton(
-    () => GoogleSheetsApi(getIt<Dio>(), getIt<AccessTokenProvider>()), // GoogleSheetsApi
+    () => GoogleSheetsApi(getIt<Dio>(), getIt<AccessTokenProvider>(), getIt<LocalStorage>()), // GoogleSheetsApi
   );
 
   // Repository

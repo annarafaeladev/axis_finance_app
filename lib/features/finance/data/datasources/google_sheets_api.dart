@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_application_1/core/auth/access_token_provider.dart';
+import 'package:flutter_application_1/core/storage/local_storage.dart';
 import 'package:flutter_application_1/features/finance/domain/entities/SetupSheet.dart';
 import 'package:flutter_application_1/features/finance/domain/entities/cartao.dart';
 import 'package:flutter_application_1/features/finance/domain/entities/configuracao.dart';
@@ -34,10 +35,21 @@ final List<String> allSheetTabs = ['Dashboard', ...sheetTabs, 'Releatorios'];
 class GoogleSheetsApi {
   final Dio dio;
   final AccessTokenProvider tokenProvider;
+  final LocalStorage localStorage;
 
-  String? _spreadsheetId;
+  GoogleSheetsApi(this.dio, this.tokenProvider, this.localStorage);
 
-  GoogleSheetsApi(this.dio, this.tokenProvider);
+  // ================= STORAGE =================
+
+  Future<String?> _loadSpreadsheetId() async {
+    return await localStorage.getString('spreadsheetId');
+  }
+
+  Future<void> _saveSpreadsheetId(String? id) async {
+    if (id != null) {
+      await localStorage.saveString('spreadsheetId', id);
+    }
+  }
 
   Future<Options> _headers() async {
     final token = await tokenProvider.getAccessToken();
@@ -52,6 +64,11 @@ class GoogleSheetsApi {
 
   Future<String> findOrCreateSpreadsheet() async {
     final options = await _headers();
+    String? spreadsheetId = await _loadSpreadsheetId();
+
+    if (spreadsheetId != null) {
+      return spreadsheetId;
+    }
 
     final searchResponse = await dio.get(
       driveApiBase,
@@ -66,8 +83,9 @@ class GoogleSheetsApi {
     final files = searchResponse.data['files'] as List<dynamic>;
 
     if (files.isNotEmpty) {
-      _spreadsheetId = files.first['id'];
-      return _spreadsheetId!;
+      await _saveSpreadsheetId(files.first['id']);
+      spreadsheetId = files.first['id'];
+      return files.first['id'] ?? '';
     }
 
     final createResponse = await dio.post(
@@ -85,15 +103,15 @@ class GoogleSheetsApi {
       },
     );
 
-    _spreadsheetId = createResponse.data['spreadsheetId'];
+    spreadsheetId = createResponse.data['spreadsheetId'];
 
-    await _initializeSheets();
+    await _initializeSheets(spreadsheetId);
 
-    return _spreadsheetId!;
+    return spreadsheetId ?? '';
   }
 
-  Future<void> _initializeSheets() async {
-    if (_spreadsheetId == null) return;
+  Future<void> _initializeSheets(String? spreadsheetId) async {
+    if (spreadsheetId == null) return;
 
     final options = await _headers();
 
@@ -106,30 +124,27 @@ class GoogleSheetsApi {
       });
 
       if (sheet.defaultRows != null) {
-        requests.add({
-          'range': '$sheetName!A2',
-          'values': sheet.defaultRows,
-        });
+        requests.add({'range': '$sheetName!A2', 'values': sheet.defaultRows});
       }
     });
 
     await dio.post(
-      '$sheetsApiBase/$_spreadsheetId/values:batchUpdate',
+      '$sheetsApiBase/$spreadsheetId/values:batchUpdate',
       options: options,
       data: {'valueInputOption': 'RAW', 'data': requests},
     );
+
+    await _saveSpreadsheetId(spreadsheetId);
   }
 
   Future<List<List<dynamic>>> getSheetData(String sheetName) async {
-    if (_spreadsheetId == null) {
-      await findOrCreateSpreadsheet();
-    }
+    String spreadsheetId = await findOrCreateSpreadsheet();
 
     final options = await _headers();
 
     try {
       final response = await dio.get(
-        '$sheetsApiBase/$_spreadsheetId/values/$sheetName',
+        '$sheetsApiBase/$spreadsheetId/values/$sheetName',
         options: options,
       );
 
@@ -143,14 +158,12 @@ class GoogleSheetsApi {
   }
 
   Future<void> appendRow(String sheetName, List<dynamic> values) async {
-    if (_spreadsheetId == null) {
-      await findOrCreateSpreadsheet();
-    }
+    String spreadsheetId = await findOrCreateSpreadsheet();
 
     final options = await _headers();
 
     await dio.post(
-      '$sheetsApiBase/$_spreadsheetId/values/$sheetName:append',
+      '$sheetsApiBase/$spreadsheetId/values/$sheetName:append',
       options: options,
       queryParameters: {
         'valueInputOption': 'RAW',
@@ -167,14 +180,12 @@ class GoogleSheetsApi {
     int rowIndex,
     List<dynamic> values,
   ) async {
-    if (_spreadsheetId == null) {
-      await findOrCreateSpreadsheet();
-    }
+    String spreadsheetId = await findOrCreateSpreadsheet();
 
     final options = await _headers();
 
     await dio.put(
-      '$sheetsApiBase/$_spreadsheetId/values/$sheetName!A$rowIndex',
+      '$sheetsApiBase/$spreadsheetId/values/$sheetName!A$rowIndex',
       options: options,
       queryParameters: {'valueInputOption': 'RAW'},
       data: {
@@ -184,14 +195,12 @@ class GoogleSheetsApi {
   }
 
   Future<void> deleteRow(String sheetName, int rowIndex) async {
-    if (_spreadsheetId == null) {
-      await findOrCreateSpreadsheet();
-    }
+    String spreadsheetId = await findOrCreateSpreadsheet();
 
     final options = await _headers();
 
     final metaResponse = await dio.get(
-      '$sheetsApiBase/$_spreadsheetId',
+      '$sheetsApiBase/$spreadsheetId',
       options: options,
     );
 
@@ -207,7 +216,7 @@ class GoogleSheetsApi {
     final sheetId = sheet['properties']['sheetId'];
 
     await dio.post(
-      '$sheetsApiBase/$_spreadsheetId:batchUpdate',
+      '$sheetsApiBase/$spreadsheetId:batchUpdate',
       options: options,
       data: {
         'requests': [
@@ -241,10 +250,7 @@ class GoogleSheetsApi {
   }
 
   Future<void> updateSettings(Map<String, String> settings) async {
-    if (_spreadsheetId == null) {
-      await findOrCreateSpreadsheet();
-    }
-
+    String spreadsheetId = await findOrCreateSpreadsheet();
     final options = await _headers();
 
     final values = [
@@ -253,7 +259,7 @@ class GoogleSheetsApi {
     ];
 
     await dio.put(
-      '$sheetsApiBase/$_spreadsheetId/values/Configuracoes!A1',
+      '$sheetsApiBase/$spreadsheetId/values/Configuracoes!A1',
       options: options,
       queryParameters: {'valueInputOption': 'RAW'},
       data: {'values': values},
