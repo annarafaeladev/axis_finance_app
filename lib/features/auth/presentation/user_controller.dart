@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/features/auth/domain/entities/user.dart';
-import 'package:flutter_application_1/features/auth/domain/usecases/user_data.dart';
+import 'package:axis_finance_app/features/auth/domain/entities/user.dart';
+import 'package:axis_finance_app/features/auth/domain/usecases/user_data.dart';
 
 
 class UserController {

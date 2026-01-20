@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/finance_fixed_page.dart';
-import 'package:flutter_application_1/pages/finance_out_page.dart';
-import 'package:flutter_application_1/pages/finance_reserve_page.dart';
+import 'package:axis_finance_app/pages/finance_fixed_page.dart';
+import 'package:axis_finance_app/pages/finance_out_page.dart';
+import 'package:axis_finance_app/pages/finance_reserve_page.dart';
 import '../models/nav_item.dart';
 import '../models/page_item.dart';
 import '../pages/home_page.dart';

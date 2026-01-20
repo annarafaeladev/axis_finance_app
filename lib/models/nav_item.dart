@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_application_1/models/page_item.dart';
+import 'package:axis_finance_app/models/page_item.dart';
 
 class NavItem {
   final PageItem pageItem;

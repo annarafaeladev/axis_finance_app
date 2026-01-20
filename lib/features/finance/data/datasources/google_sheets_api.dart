@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_application_1/core/auth/access_token_provider.dart';
-import 'package:flutter_application_1/core/storage/local_storage.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/SetupSheet.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/cartao.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/configuracao.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/entrada.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/fixa.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/investimento.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/reserva.dart';
-import 'package:flutter_application_1/features/finance/domain/entities/saida.dart';
+import 'package:axis_finance_app/core/auth/access_token_provider.dart';
+import 'package:axis_finance_app/core/storage/local_storage.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/SetupSheet.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/cartao.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/configuracao.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/fixa.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/investimento.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/reserva.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 
 const String driveApiBase = 'https://www.googleapis.com/drive/v3/files';
 const String sheetsApiBase = 'https://sheets.googleapis.com/v4/spreadsheets';

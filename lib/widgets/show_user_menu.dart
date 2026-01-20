@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/core/di/injector.dart';
-import 'package:flutter_application_1/features/auth/presentation/auth_controller.dart';
-import 'package:flutter_application_1/features/auth/presentation/user_controller.dart';
+import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/features/auth/presentation/auth_controller.dart';
+import 'package:axis_finance_app/features/auth/presentation/user_controller.dart';
 
 Future<void> showUserMenu(BuildContext context) async {
   final userController = getIt<UserController>();

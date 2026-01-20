@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/core/auth/access_token_provider.dart';
-import 'package:flutter_application_1/features/auth/domain/usecases/user_data.dart';
+import 'package:axis_finance_app/core/auth/access_token_provider.dart';
+import 'package:axis_finance_app/features/auth/domain/usecases/user_data.dart';
 
 class UserAccessTokenProvider implements AccessTokenProvider {
   final UserData userData;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
-import 'package:flutter_application_1/core/di/injector.dart';
-import 'package:flutter_application_1/features/auth/presentation/auth_controller.dart';
-import 'package:flutter_application_1/features/finance/presentation/controllers/finance_controller.dart';
+import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/features/auth/presentation/auth_controller.dart';
+import 'package:axis_finance_app/features/finance/presentation/controllers/finance_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
