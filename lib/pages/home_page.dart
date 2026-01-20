@@ -1,8 +1,25 @@
+import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/features/finance/presentation/controllers/finance_controller.dart';
 import 'package:flutter/material.dart';
 import '../widgets/finance_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  late final FinanceController _financeController;
+  String _totalEntradas = 'R\$ 0,00';
+
+  @override
+  void initState() {
+    super.initState();
+    _financeController = getIt<FinanceController>();
+    _totalEntradas = _financeController.getTotalEntry();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +39,9 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 20),
 
           // 🟢 Renda Mensal
-          const FinanceCard(
-            title: "Renda Mensal",
-            value: "R\$ 0.000,00",
+          FinanceCard(
+            title: "Total Entradas",
+            value: _totalEntradas,
             icon: Icons.trending_up,
             startColor: Color(0xFF189E5D),
             endColor: Color(0xFF2EC985),
@@ -65,4 +82,5 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
 }

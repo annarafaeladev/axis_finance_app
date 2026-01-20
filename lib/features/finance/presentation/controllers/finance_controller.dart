@@ -1,18 +1,23 @@
-import '../../domain/entities/finance_entry.dart';
-import '../../domain/usecases/get_entries.dart';
-import '../../domain/usecases/init_finance.dart';
+import 'package:axis_finance_app/features/finance/domain/usecases/init_finance.dart';
+import 'package:axis_finance_app/features/finance/presentation/controllers/finance_entry_controller.dart';
+import 'package:flutter/foundation.dart';
 
-class FinanceController {
-  final InitFinance initFinance;
-  final GetEntries getEntries;
+class FinanceController extends ChangeNotifier {
+  final InitFinance _initFinance;
+  final FinanceEntryController _entryController;
 
-  FinanceController(this.initFinance, this.getEntries);
+
+  FinanceController(
+    this._initFinance, this._entryController,
+   
+  );
 
   Future<void> init() async {
-    await initFinance();
+    await _initFinance();
   }
 
-  // Future<List<FinanceEntry>> load() {
-  //   return getEntries();
-  // }
+ String getTotalEntry() {
+    return _entryController.totalEntradasFormatado;
+ }
+ 
 }

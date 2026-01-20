@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await controller.login();
 
-      await financeController.initFinance();
+      await financeController.init();
 
       Navigator.pushReplacementNamed(context, "/home");
     } catch (e) {
