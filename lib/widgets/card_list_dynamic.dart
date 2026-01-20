@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/item_history.dart';
+import 'package:axis_finance_app/models/item_history.dart';
 
 class CardListDynamic extends StatelessWidget {
   final String titulo;

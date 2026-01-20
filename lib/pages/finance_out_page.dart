@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/card_list_dynamic.dart';
-import 'package:flutter_application_1/widgets/content_page_header.dart';
-import 'package:flutter_application_1/widgets/finance_card.dart';
+import 'package:axis_finance_app/widgets/card_list_dynamic.dart';
+import 'package:axis_finance_app/widgets/content_page_header.dart';
+import 'package:axis_finance_app/widgets/finance_card.dart';
 
 class FinanceOutPage extends StatelessWidget {
   const FinanceOutPage({super.key});

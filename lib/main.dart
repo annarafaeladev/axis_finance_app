@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/core/di/injector.dart';
-import 'package:flutter_application_1/navigation/nav_items.dart';
-import 'package:flutter_application_1/pages/login_page.dart';
-import 'package:flutter_application_1/widgets/app_bar_custom.dart';
-import 'package:flutter_application_1/widgets/app_header.dart';
-import 'package:flutter_application_1/widgets/app_navigation_bar.dart';
+import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/navigation/nav_items.dart';
+import 'package:axis_finance_app/pages/login_page.dart';
+import 'package:axis_finance_app/widgets/app_bar_custom.dart';
+import 'package:axis_finance_app/widgets/app_header.dart';
+import 'package:axis_finance_app/widgets/app_navigation_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_application_1/core/auth/access_token_provider.dart';
-import 'package:flutter_application_1/core/di/injector.dart';
-import 'package:flutter_application_1/core/storage/local_storage.dart';
-import 'package:flutter_application_1/features/finance/data/datasources/google_sheets_api.dart';
-import 'package:flutter_application_1/features/finance/data/repositories/finance_repository_impl.dart';
-import 'package:flutter_application_1/features/finance/domain/repositories/finance_repository.dart';
-import 'package:flutter_application_1/features/finance/domain/usecases/get_entries.dart';
-import 'package:flutter_application_1/features/finance/domain/usecases/init_finance.dart';
-import 'package:flutter_application_1/features/finance/presentation/controllers/finance_controller.dart';
+import 'package:axis_finance_app/core/auth/access_token_provider.dart';
+import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/core/storage/local_storage.dart';
+import 'package:axis_finance_app/features/finance/data/datasources/google_sheets_api.dart';
+import 'package:axis_finance_app/features/finance/data/repositories/finance_repository_impl.dart';
+import 'package:axis_finance_app/features/finance/domain/repositories/finance_repository.dart';
+import 'package:axis_finance_app/features/finance/domain/usecases/get_entries.dart';
+import 'package:axis_finance_app/features/finance/domain/usecases/init_finance.dart';
+import 'package:axis_finance_app/features/finance/presentation/controllers/finance_controller.dart';
 
 void registerFinance() {
   // Datasource

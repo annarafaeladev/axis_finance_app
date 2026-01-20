@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/core/storage/local_storage.dart';
-import 'package:flutter_application_1/features/auth/data/datasource/google_auth_datasource.dart';
+import 'package:axis_finance_app/core/storage/local_storage.dart';
+import 'package:axis_finance_app/features/auth/data/datasource/google_auth_datasource.dart';
 
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/entities/user.dart';

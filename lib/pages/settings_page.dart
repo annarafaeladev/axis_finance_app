@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/finance_settings_form.dart';
+import 'package:axis_finance_app/widgets/finance_settings_form.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

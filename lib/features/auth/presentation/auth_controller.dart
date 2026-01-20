@@ -1,6 +1,6 @@
 
-import 'package:flutter_application_1/features/auth/domain/usecases/login_with_google.dart';
-import 'package:flutter_application_1/features/auth/domain/usecases/logout_with_google.dart';
+import 'package:axis_finance_app/features/auth/domain/usecases/login_with_google.dart';
+import 'package:axis_finance_app/features/auth/domain/usecases/logout_with_google.dart';
 class AuthController {
   final LoginWithGoogle loginWithGoogle;
   final LogoutWithGoogle logoutWithGoogle;

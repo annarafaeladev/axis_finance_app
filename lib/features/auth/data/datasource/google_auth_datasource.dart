@@ -1,4 +1,4 @@
-import 'package:flutter_application_1/features/auth/data/models/user_model.dart';
+import 'package:axis_finance_app/features/auth/data/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthDataSource {

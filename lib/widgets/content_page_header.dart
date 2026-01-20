@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/primary_button.dart';
+import 'package:axis_finance_app/widgets/primary_button.dart';
 
 class ContentPageHeader extends StatelessWidget {
   final String title;

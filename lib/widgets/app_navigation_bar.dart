@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/nav_item.dart';
-import 'package:flutter_application_1/widgets/finance_menu_modal.dart';
+import 'package:axis_finance_app/models/nav_item.dart';
+import 'package:axis_finance_app/widgets/finance_menu_modal.dart';
 
 class AppNavigationBar extends StatelessWidget {
   final int currentIndex;
