@@ -1,9 +1,10 @@
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_entry_controller.dart';
+import 'package:axis_finance_app/widgets/entrada_item.dart';
+import 'package:axis_finance_app/widgets/list_item_dynamic.dart';
 import 'package:axis_finance_app/widgets/new_entry_modal.dart';
 import 'package:flutter/material.dart';
-import 'package:axis_finance_app/widgets/card_list_dynamic.dart';
 import 'package:axis_finance_app/widgets/content_page_header.dart';
 import 'package:axis_finance_app/widgets/finance_card.dart';
 
@@ -60,7 +61,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
               required descricao,
               required valor,
               required tipo,
-            }) async  {
+            }) async {
               await _entryController.updateEntry(
                 item.indexRow,
                 data,
@@ -103,13 +104,18 @@ class _FinanceInPageState extends State<FinanceInPage> {
 
               const SizedBox(height: 16),
 
-              CardListDynamic(
+              ListItemDynamic<Entrada>(
                 titulo: "Histórico de Entradas",
-                emptyMessage: "Nenhuma entrada registrada",
                 items: _entryController.entradas,
-                onPressedUpdateItem: (item) => _openUpdateModal(item),
-                onPressed: (item) =>
-                    _entryController.deleteEntryByIndex(item.indexRow),
+                emptyMessage: "Nenhuma entrada registrada",
+                itemBuilder: (context, item) {
+                  return EntradaItem(
+                    item: item,
+                    onEdit: () => _openUpdateModal(item),
+                    onDelete: () =>
+                        _entryController.deleteEntryByIndex(item.indexRow),
+                  );
+                },
               ),
             ],
           ),

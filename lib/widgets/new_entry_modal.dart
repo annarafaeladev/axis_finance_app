@@ -17,8 +17,6 @@ class NewEntryModal extends StatefulWidget {
 
   @override
   State<NewEntryModal> createState() => _NewEntryModalState();
-
-  
 }
 
 class _NewEntryModalState extends State<NewEntryModal> {
@@ -30,7 +28,12 @@ class _NewEntryModalState extends State<NewEntryModal> {
   DateTime? _dataSelecionada;
   String _tipoSelecionado = 'Salário';
 
-  final List<String> tipos = ['Salário', 'Investimento', 'Outros'];
+  final List<String> tipos = [
+    'Salário',
+    'Investimento',
+    '13° Salário',
+    'Outros',
+  ];
 
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
@@ -164,6 +167,11 @@ class _NewEntryModalState extends State<NewEntryModal> {
                 if (double.tryParse(v.replaceAll(',', '.')) == null) {
                   return 'Valor inválido';
                 }
+
+                if (double.parse(v) > 999999.99) {
+                  return 'Valor máximo permitido é R\$ 999.999,99';
+                }
+
                 return null;
               },
             ),
