@@ -1,3 +1,4 @@
+import 'package:axis_finance_app/core/storage/storage_key.dart';
 import 'package:axis_finance_app/features/auth/domain/entities/user.dart';
 
 class UserModel extends User {
@@ -19,23 +20,23 @@ class UserModel extends User {
     );
   }
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-  return UserModel(
-    id: json['id'],
-    name: json['name'],
-    email: json['email'],
-    photo: json['photo'],
-    accessToken: json['accessToken'],
-  );
-}
+    factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json[StorageKeyUser.id.key],
+      name: json[StorageKeyUser.name.key],
+      email: json[StorageKeyUser.email.key],
+      photo: json[StorageKeyUser.photo.key],
+      accessToken: json[StorageKeyUser.accessToken.key],
+    );
+  }
 
-
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'email': email,
-        'photo': photo,
-        'accessToken': accessToken,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      StorageKeyUser.id.key: id,
+      StorageKeyUser.name.key: name,
+      StorageKeyUser.email.key: email,
+      StorageKeyUser.photo.key: photo,
+      StorageKeyUser.accessToken.key: accessToken,
+    };
+  }
 }
