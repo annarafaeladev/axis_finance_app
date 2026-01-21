@@ -46,9 +46,7 @@ class ContentPageHeader extends StatelessWidget {
           text: buttonText,
           icon: Icons.add,
           color: color,
-          onPressed: () {
-            print("Clicou");
-          },
+          onPressed: onPressed
         ),
       ],
     );

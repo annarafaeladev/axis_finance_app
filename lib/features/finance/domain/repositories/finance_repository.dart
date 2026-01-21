@@ -1,10 +1,11 @@
-import '../entities/finance_entry.dart';
-import '../entities/finance_settings.dart';
+
+import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
 
 abstract class FinanceRepository {
   Future<void> init();
-  // Future<List<FinanceEntry>> getEntradas();
-  // Future<void> addEntrada(FinanceEntry entry);
-  // Future<FinanceSettings> getSettings();
-  // Future<void> updateSettings(FinanceSettings settings);
+  Future<void> addEntry(Entrada entrada);
+  Future<void> updateEntry(Entrada entrada);
+  Future<int> getNextIndex();
+  Future<List<Entrada>> getEntries();
+  Future<void> deleteEntry(int entryId);
 }

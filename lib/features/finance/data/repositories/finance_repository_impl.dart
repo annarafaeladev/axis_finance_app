@@ -1,6 +1,6 @@
-
-import 'package:flutter_application_1/features/finance/data/datasources/google_sheets_api.dart';
-import 'package:flutter_application_1/features/finance/domain/repositories/finance_repository.dart';
+import 'package:axis_finance_app/features/finance/data/datasources/google_sheets_api.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
+import 'package:axis_finance_app/features/finance/domain/repositories/finance_repository.dart';
 
 class FinanceRepositoryImpl implements FinanceRepository {
   final GoogleSheetsApi api;
@@ -12,44 +12,47 @@ class FinanceRepositoryImpl implements FinanceRepository {
     return api.findOrCreateSpreadsheet();
   }
 
-  // @override
-  // Future<void> addEntrada(FinanceEntry entry) {
-  //   // return api.append('Entradas', [
-  //   //   entry.date.toIso8601String(),
-  //   //   entry.description,
-  //   //   entry.value,
-  //   //   entry.category,
-  //   //   entry.paymentMethod,
-  //   //   entry.status,
-  //   // ]);
+  @override
+  Future<List<Entrada>> getEntries() async {
+    final sheetData = await api.getSheetData('Entradas');
 
-  // }
+    if (sheetData.length <= 1) return [];
 
-  // @override
-  // Future<List<FinanceEntry>> getEntradas() async {
-  //   final rows = await api.getSheet('Entradas');
+    return sheetData
+        .skip(1)
+        .toList()
+        .asMap()
+        .entries
+        .where((entry) => entry.value.isNotEmpty)
+        .map((entry) {
+          final indexRow = entry.key + 1;
+          return Entrada.fromRow(entry.value, indexRow);
+        })
+        .toList();
+  }
 
-  //   return rows.skip(1).map((row) {
-  //     return FinanceEntry(
-  //       id: '',
-  //       date: DateTime.parse(row[0]),
-  //       description: row[1],
-  //       value: double.parse(row[2].toString()),
-  //       category: row[3],
-  //       type: 'entrada',
-  //       paymentMethod: row[4],
-  //       status: row[5],
-  //     );
-  //   }).toList();
-  // }
+  @override
+  Future<void> deleteEntry(int indexRow) async {
+    await api.deleteRow('Entradas', indexRow);
+  }
 
-  // @override
-  // Future<FinanceSettings> getSettings() {
-  //   throw UnimplementedError();
-  // }
+  @override
+  Future<void> addEntry(Entrada entrada) async {
+    await api.appendRow('Entradas', entrada.toList());
+  }
 
-  // @override
-  // Future<void> updateSettings(FinanceSettings settings) {
-  //   throw UnimplementedError();
-  // }
+  @override
+  Future<int> getNextIndex() async {
+    final rows = await api.getSheetData('Entradas');
+
+    // remove header
+    final dataRows = rows.skip(1).toList();
+
+    return dataRows.length + 1;
+  }
+ 
+  @override
+  Future<void> updateEntry(Entrada entrada) async {
+    await api.updateRow('Entradas', entrada.indexRow, entrada.toList());
+  }
 }
