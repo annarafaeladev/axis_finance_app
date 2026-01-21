@@ -42,15 +42,14 @@ class _LoginPageState extends State<LoginPage> {
               const Spacer(),
 
               // Logo ou ícone do app
-              Icon(
-                Icons.account_circle_outlined,
-                size: 96,
-                color: theme.primaryColor,
+              Image.asset(
+                'assets/image/logo_app.png',
+                width: 120,
+                height: 120,
               ),
-
               const SizedBox(height: 24),
 
-              Text('Bem-vindo', style: theme.textTheme.headlineLarge),
+              Text('Bem-vindo', style: theme.textTheme.headlineMedium),
 
               const SizedBox(height: 8),
 
