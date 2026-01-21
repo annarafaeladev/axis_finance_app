@@ -2,19 +2,14 @@ import 'package:axis_finance_app/features/auth/data/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthDataSource {
-  final _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'profile',
-      'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/drive.file',
-    ],
-  );
+  final GoogleSignIn googleSignIn;
+  GoogleAuthDataSource(this.googleSignIn);
 
   Future<UserModel> signIn() async {
-    await _googleSignIn.signOut();
+    GoogleSignInAccount? account = await googleSignIn.signInSilently();
 
-    final account = await _googleSignIn.signIn();
+    account ??= await googleSignIn.signIn();
+
     if (account == null) {
       throw Exception('Login cancelado');
     }
@@ -28,9 +23,8 @@ class GoogleAuthDataSource {
 
     return UserModel.fromGoogle(account, token);
   }
-  
-  Future<void> logout() async {
-    await _googleSignIn.signOut();
 
+  Future<void> logout() async {
+    await googleSignIn.signOut();
   }
 }

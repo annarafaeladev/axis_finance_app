@@ -1,19 +1,20 @@
 import 'package:axis_finance_app/core/auth/access_token_provider.dart';
-import 'package:axis_finance_app/features/auth/domain/usecases/user_data.dart';
-
+import 'package:axis_finance_app/core/storage/local_storage.dart';
+import 'package:axis_finance_app/core/storage/storage_key.dart';
 class UserAccessTokenProvider implements AccessTokenProvider {
-  final UserData userData;
+  final LocalStorage storage;
 
-  UserAccessTokenProvider(this.userData);
+  UserAccessTokenProvider(this.storage);
 
   @override
-  Future<String> getAccessToken() async {
-    final user = await userData();
+  Future<String?> getAccessToken() async {
+    final userMap = await storage.getMap(StorageKey.user);
+    return userMap?[StorageKeyUser.accessToken.key];
+  }
 
-    if (user == null) {
-      throw Exception('Usuário não logado');
-    }
-
-    return user.accessToken;
+  @override
+  Future<void> clear() async {
+    await storage.delete(StorageKey.user);
+    await storage.delete(StorageKey.spreadsheetId);
   }
 }
