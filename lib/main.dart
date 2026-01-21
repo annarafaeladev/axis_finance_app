@@ -1,3 +1,4 @@
+import 'package:axis_finance_app/pages/spash.dart';
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/navigation/nav_items.dart';
@@ -20,10 +21,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Finance',
+      initialRoute: '/',
       routes: {
-        '/': (_) => LoginPage(),
-        '/home': (_) => MainLayout(), // sua home
+        '/': (_) => const AuthCheckPage(),
+        '/home': (_) => const MainLayout(),
+        '/login': (_) => const LoginPage(),
+      },
+      builder: (context, child) {
+        return SafeArea(child: child!);
       },
       darkTheme: ThemeData.dark(useMaterial3: true),
       theme: ThemeData(

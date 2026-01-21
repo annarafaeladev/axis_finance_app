@@ -1,31 +1,38 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+import 'package:axis_finance_app/core/storage/storage_key.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class LocalStorage {
-  Future<void> saveString(String key, String value) async {
+  Future<void> saveString(StorageKey object, String value) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(key, value);
+    await prefs.setString(object.key, value);
+  }
+  
+
+  Future<String?> getString(StorageKey object) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(object.key);
   }
 
-  Future<String?> getString(String key) async {
+  Future<void> saveMap(StorageKey object, Map<String, dynamic> value) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key);
+    await prefs.setString(object.key, jsonEncode(value));
   }
 
-  Future<void> saveMap(String key, Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>?> getMap(StorageKey object) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(key, jsonEncode(data));
+    final json = prefs.getString(object.key);
+    return json != null ? jsonDecode(json) : null;
   }
 
-  Future<Map<String, dynamic>?> getMap(String key) async {
+  Future<void> delete(StorageKey object) async {
     final prefs = await SharedPreferences.getInstance();
-    final value = prefs.getString(key);
-    return value == null ? null : jsonDecode(value);
+    await prefs.remove(object.key);
   }
 
-  Future<void> delete(String key) async {
+  Future<void> deleteAll() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(key);
+    await prefs.clear();
   }
 }
-

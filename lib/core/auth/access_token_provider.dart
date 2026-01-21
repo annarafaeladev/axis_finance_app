@@ -1,3 +1,4 @@
 abstract class AccessTokenProvider {
-  Future<String> getAccessToken();
+  Future<String?> getAccessToken();
+  Future<void> clear();
 }
