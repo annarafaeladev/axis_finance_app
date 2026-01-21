@@ -15,12 +15,13 @@ import 'package:axis_finance_app/features/finance/presentation/controllers/finan
 
 void registerFinance() {
   // Datasource
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<GoogleSheetsApi>(
     () => GoogleSheetsApi(
-      getIt<Dio>(),
-      getIt<AccessTokenProvider>(),
-      getIt<LocalStorage>(),
-    ), // GoogleSheetsApi
+      driveDio: getIt<Dio>(instanceName: 'driveDio'),
+      sheetsDio: getIt<Dio>(instanceName: 'sheetsDio'),
+      tokenProvider: getIt<AccessTokenProvider>(),
+      localStorage: getIt<LocalStorage>(),
+    ),
   );
 
   // Repository

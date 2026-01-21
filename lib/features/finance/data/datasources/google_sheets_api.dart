@@ -1,3 +1,4 @@
+import 'package:axis_finance_app/core/storage/storage_key.dart';
 import 'package:dio/dio.dart';
 import 'package:axis_finance_app/core/auth/access_token_provider.dart';
 import 'package:axis_finance_app/core/storage/local_storage.dart';
@@ -10,8 +11,8 @@ import 'package:axis_finance_app/features/finance/domain/entities/investimento.d
 import 'package:axis_finance_app/features/finance/domain/entities/reserva.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 
-const String driveApiBase = 'https://www.googleapis.com/drive/v3/files';
-const String sheetsApiBase = 'https://sheets.googleapis.com/v4/spreadsheets';
+const String driveResource = '/drive/v3/files';
+const String sheetsResource = '/v4/spreadsheets';
 
 const String spreadsheetName = 'Finance_Dashboard_50-30-20_arbds';
 
@@ -33,46 +34,37 @@ final List<String> sheetTabs = setupSheet.keys.toList();
 final List<String> allSheetTabs = ['Dashboard', ...sheetTabs, 'Releatorios'];
 
 class GoogleSheetsApi {
-  final Dio dio;
+  final Dio driveDio;
+  final Dio sheetsDio;
   final AccessTokenProvider tokenProvider;
   final LocalStorage localStorage;
 
-  GoogleSheetsApi(this.dio, this.tokenProvider, this.localStorage);
-
-  // ================= STORAGE =================
+  GoogleSheetsApi({
+    required this.driveDio,
+    required this.sheetsDio,
+    required this.tokenProvider,
+    required this.localStorage,
+  });
 
   Future<String?> _loadSpreadsheetId() async {
-    return await localStorage.getString('spreadsheetId');
+    return await localStorage.getString(StorageKey.spreadsheetId);
   }
 
   Future<void> _saveSpreadsheetId(String? id) async {
     if (id != null) {
-      await localStorage.saveString('spreadsheetId', id);
+      await localStorage.saveString(StorageKey.spreadsheetId, id);
     }
   }
 
-  Future<Options> _headers() async {
-    final token = await tokenProvider.getAccessToken();
-
-    return Options(
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-  }
-
   Future<String> findOrCreateSpreadsheet() async {
-    final options = await _headers();
     String? spreadsheetId = await _loadSpreadsheetId();
 
     if (spreadsheetId != null) {
       return spreadsheetId;
     }
 
-    final searchResponse = await dio.get(
-      driveApiBase,
-      options: options,
+    final searchResponse = await driveDio.get(
+      driveResource,
       queryParameters: {
         'q':
             "name='$spreadsheetName' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false",
@@ -88,9 +80,8 @@ class GoogleSheetsApi {
       return files.first['id'] ?? '';
     }
 
-    final createResponse = await dio.post(
-      sheetsApiBase,
-      options: options,
+    final createResponse = await sheetsDio.post(
+      sheetsResource,
       data: {
         'properties': {'title': spreadsheetName},
         'sheets': allSheetTabs
@@ -113,7 +104,6 @@ class GoogleSheetsApi {
   Future<void> _initializeSheets(String? spreadsheetId) async {
     if (spreadsheetId == null) return;
 
-    final options = await _headers();
 
     final List<Map<String, dynamic>> requests = [];
 
@@ -128,9 +118,8 @@ class GoogleSheetsApi {
       }
     });
 
-    await dio.post(
-      '$sheetsApiBase/$spreadsheetId/values:batchUpdate',
-      options: options,
+    await sheetsDio.post(
+      '$sheetsResource/$spreadsheetId/values:batchUpdate',
       data: {'valueInputOption': 'RAW', 'data': requests},
     );
 
@@ -140,12 +129,9 @@ class GoogleSheetsApi {
   Future<List<List<dynamic>>> getSheetData(String sheetName) async {
     String spreadsheetId = await findOrCreateSpreadsheet();
 
-    final options = await _headers();
-
     try {
-      final response = await dio.get(
-        '$sheetsApiBase/$spreadsheetId/values/$sheetName',
-        options: options,
+      final response = await sheetsDio.get(
+        '$sheetsResource/$spreadsheetId/values/$sheetName',
       );
 
       return (response.data['values'] as List?)
@@ -160,11 +146,9 @@ class GoogleSheetsApi {
   Future<void> appendRow(String sheetName, List<dynamic> values) async {
     String spreadsheetId = await findOrCreateSpreadsheet();
 
-    final options = await _headers();
 
-    await dio.post(
-      '$sheetsApiBase/$spreadsheetId/values/$sheetName:append',
-      options: options,
+    await sheetsDio.post(
+      '$sheetsResource/$spreadsheetId/values/$sheetName:append',
       queryParameters: {
         'valueInputOption': 'RAW',
         'insertDataOption': 'INSERT_ROWS',
@@ -182,11 +166,9 @@ class GoogleSheetsApi {
   ) async {
     String spreadsheetId = await findOrCreateSpreadsheet();
 
-    final options = await _headers();
 
-    await dio.put(
-      '$sheetsApiBase/$spreadsheetId/values/$sheetName!A$rowIndex',
-      options: options,
+    await sheetsDio.put(
+      '$sheetsResource/$spreadsheetId/values/$sheetName!A$rowIndex',
       queryParameters: {'valueInputOption': 'RAW'},
       data: {
         'values': [values],
@@ -197,11 +179,9 @@ class GoogleSheetsApi {
   Future<void> deleteRow(String sheetName, int rowIndex) async {
     String spreadsheetId = await findOrCreateSpreadsheet();
 
-    final options = await _headers();
 
-    final metaResponse = await dio.get(
-      '$sheetsApiBase/$spreadsheetId',
-      options: options,
+    final metaResponse = await sheetsDio.get(
+      '$sheetsResource/$spreadsheetId',
     );
 
     final sheets = metaResponse.data['sheets'] as List<dynamic>;
@@ -215,9 +195,8 @@ class GoogleSheetsApi {
 
     final sheetId = sheet['properties']['sheetId'];
 
-    await dio.post(
-      '$sheetsApiBase/$spreadsheetId:batchUpdate',
-      options: options,
+    await sheetsDio.post(
+      '$sheetsResource/$spreadsheetId:batchUpdate',
       data: {
         'requests': [
           {
@@ -251,16 +230,14 @@ class GoogleSheetsApi {
 
   Future<void> updateSettings(Map<String, String> settings) async {
     String spreadsheetId = await findOrCreateSpreadsheet();
-    final options = await _headers();
 
     final values = [
       ['Chave', 'Valor'],
       ...settings.entries.map((e) => [e.key, e.value]),
     ];
 
-    await dio.put(
-      '$sheetsApiBase/$spreadsheetId/values/Configuracoes!A1',
-      options: options,
+    await sheetsDio.put(
+      '$sheetsResource/$spreadsheetId/values/Configuracoes!A1',
       queryParameters: {'valueInputOption': 'RAW'},
       data: {'values': values},
     );
