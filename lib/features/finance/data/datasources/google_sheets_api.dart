@@ -1,6 +1,5 @@
 import 'package:axis_finance_app/core/storage/storage_key.dart';
 import 'package:dio/dio.dart';
-import 'package:axis_finance_app/core/auth/access_token_provider.dart';
 import 'package:axis_finance_app/core/storage/local_storage.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/SetupSheet.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/cartao.dart';
@@ -36,13 +35,11 @@ final List<String> allSheetTabs = ['Dashboard', ...sheetTabs, 'Releatorios'];
 class GoogleSheetsApi {
   final Dio driveDio;
   final Dio sheetsDio;
-  final AccessTokenProvider tokenProvider;
   final LocalStorage localStorage;
 
   GoogleSheetsApi({
     required this.driveDio,
     required this.sheetsDio,
-    required this.tokenProvider,
     required this.localStorage,
   });
 
