@@ -1,11 +1,11 @@
-import '../repositories/finance_repository.dart';
+import 'package:axis_finance_app/features/finance/domain/repositories/sheets_repository.dart';
 
 class InitFinance {
-  final FinanceRepository repository;
+  final SheetsRepository repository;
 
   InitFinance(this.repository);
 
   Future<void> call() {
-    return repository.init();
+    return repository.initializer();
   }
 }

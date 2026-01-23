@@ -42,7 +42,15 @@ class FinanceExpenseController extends ChangeNotifier {
 
     for (final Saida e in saidas) {
       if (e.indexRow > indexRow) {
-        e.indexRow -= 1;
+        e.copyWith(
+          e.data,
+          e.descricao,
+          e.valor,
+          e.categoria,
+          e.metodoPagamento,
+          e.status,
+          e.indexRow - 1,
+        );
       }
     }
 

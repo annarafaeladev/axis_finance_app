@@ -1,5 +1,6 @@
 import 'package:axis_finance_app/features/finance/data/repositories/finance_expense_repository_impl.dart';
-import 'package:axis_finance_app/features/finance/domain/repositories/finance_expense_repository.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
+import 'package:axis_finance_app/features/finance/domain/repositories/tabs_repository.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/add_expense.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/delete_expense.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/get_expenses.dart';
@@ -10,7 +11,7 @@ import 'package:axis_finance_app/features/finance/presentation/controllers/finan
 
 void registerFinanceExpense() {
   // Repository
-  getIt.registerLazySingleton<FinanceExpenseRepository>(
+  getIt.registerLazySingleton<TabsRepository<Saida>>(
     () => FinanceExpenseRepositoryImpl(getIt<GoogleSheetsApi>()),
   );
 

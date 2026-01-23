@@ -1,5 +1,6 @@
 import 'package:axis_finance_app/features/finance/data/repositories/finance_entry_repository_impl.dart';
-import 'package:axis_finance_app/features/finance/domain/repositories/finance_entry_repository.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
+import 'package:axis_finance_app/features/finance/domain/repositories/tabs_repository.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/entries/add_entry.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/entries/delete_entry.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/entries/update_entry.dart';
@@ -11,7 +12,7 @@ import 'package:axis_finance_app/features/finance/domain/usecases/init_finance.d
 
 void registerFinanceEntry() {  
   // Repository
-  getIt.registerLazySingleton<FinanceEntryRepository>(
+  getIt.registerLazySingleton<TabsRepository<Entrada>>(
     () => FinanceEntryRepositoryImpl(getIt<GoogleSheetsApi>()),
   );
 

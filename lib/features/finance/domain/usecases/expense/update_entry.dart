@@ -1,8 +1,8 @@
 import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
-import 'package:axis_finance_app/features/finance/domain/repositories/finance_expense_repository.dart';
+import 'package:axis_finance_app/features/finance/domain/repositories/tabs_repository.dart';
 
 class UpdateExpense {
-  final FinanceExpenseRepository repository;
+  final TabsRepository<Saida> repository;
 
   UpdateExpense(this.repository);
 

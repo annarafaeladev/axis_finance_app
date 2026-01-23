@@ -1,11 +1,14 @@
+import 'package:axis_finance_app/features/finance/domain/entities/sheet_entity.dart';
 import 'package:intl/intl.dart';
 
-class Entrada {
+class Entrada implements SheetEntity {
   final DateTime data;
   final String descricao;
   final double valor;
   final String tipo;
-  int indexRow;
+
+  @override
+  final indexRow;
 
   Entrada({
     required this.data,
@@ -41,17 +44,18 @@ class Entrada {
     String? descricao,
     double? valor,
     String? tipo,
+    int? indexRow,
   }) {
     return Entrada(
       data: data ?? this.data,
       descricao: descricao ?? this.descricao,
       valor: valor ?? this.valor,
       tipo: tipo ?? this.tipo,
-      indexRow: indexRow,
+      indexRow: indexRow ?? this.indexRow,
     );
   }
 
-  /// Converte para uma linha da planilha
+  @override
   List<dynamic> toList() {
     return [DateFormat('dd/MM/yyyy').format(data), descricao, valor, tipo];
   }
