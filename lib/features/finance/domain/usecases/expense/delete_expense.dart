@@ -1,10 +1,10 @@
-import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/features/finance/domain/repositories/tabs_repository.dart';
 
-class DeleteEntry {
-  final TabsRepository<Entrada> repository;
+class DeleteExpense {
+  final TabsRepository<Saida> repository;
 
-  DeleteEntry(this.repository);
+  DeleteExpense(this.repository);
 
   Future<void> call(int indexRow) {
     return repository.delete(indexRow);

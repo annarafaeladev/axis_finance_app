@@ -1,8 +1,8 @@
 import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
-import 'package:axis_finance_app/features/finance/domain/repositories/finance_repository.dart';
+import 'package:axis_finance_app/features/finance/domain/repositories/tabs_repository.dart';
 
 class UpdateEntry {
-  final FinanceRepository repository;
+  final TabsRepository<Entrada> repository;
 
   UpdateEntry(this.repository);
 
@@ -22,7 +22,7 @@ class UpdateEntry {
       indexRow: nextIndex,
     );
 
-    await repository.updateEntry(entrada);
+    await repository.update(entrada);
 
     return entrada;
   }

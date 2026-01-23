@@ -42,7 +42,13 @@ class FinanceEntryController extends ChangeNotifier {
 
     for (final Entrada e in entradas) {
       if (e.indexRow > indexRow) {
-        e.indexRow -= 1;
+        e.copyWith(
+          data: e.data,
+          descricao: e.descricao,
+          valor: e.valor,
+          tipo: e.tipo,
+          indexRow: e.indexRow - 1,
+        );
       }
     }
 
