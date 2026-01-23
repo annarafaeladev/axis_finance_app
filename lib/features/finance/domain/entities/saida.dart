@@ -31,7 +31,6 @@ class Saida implements SheetEntity {
     'Status',
   ];
 
-  @override
   factory Saida.fromRow(List<dynamic> row, int indexRow) {
     final formatter = DateFormat('dd/MM/yyyy');
     final data = formatter.parse(row[0]);
