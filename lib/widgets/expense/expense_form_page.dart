@@ -138,7 +138,7 @@ class _SaidaFormPageState extends State<SaidaFormPage> {
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 32),
 
             InkWell(
               onTap: _selecionarData,

@@ -124,7 +124,7 @@ class _EntradaFormPageState extends State<EntradaFormPage> {
                   ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 32),
 
             /// 📅 DATA
             InkWell(
