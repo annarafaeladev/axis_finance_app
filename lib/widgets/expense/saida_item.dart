@@ -119,6 +119,7 @@ class SaidaItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 PopupMenuButton<String>(
+                  color: Colors.white,
                   icon: const Icon(Icons.more_vert, size: 20),
                   onSelected: (value) {
                     if (value == 'edit') onEdit?.call();

@@ -1,11 +1,11 @@
 import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/core/enum/form_action.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_expense_controller.dart';
-import 'package:axis_finance_app/widgets/expense/new_expense_modal.dart';
+import 'package:axis_finance_app/widgets/expense/expense_form_page.dart';
 import 'package:axis_finance_app/widgets/expense/saida_item.dart';
 import 'package:axis_finance_app/widgets/list_item_dynamic.dart';
 import 'package:flutter/material.dart';
-import 'package:axis_finance_app/widgets/card_list_dynamic.dart';
 import 'package:axis_finance_app/widgets/content_page_header.dart';
 import 'package:axis_finance_app/widgets/finance_card.dart';
 
@@ -26,66 +26,73 @@ class _FinanceOutPage extends State<FinanceOutPage> {
     _expenseController.loadExpenses();
   }
 
-  void _openCreateModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) => NewExpenseModal(
-        onSave:
-            ({
-              required data,
-              required descricao,
-              required valor,
-              required categoria,
-              required metodoPagamento,
-              required status,
-            }) async {
-              await _expenseController.addExpense(
-                data,
-                descricao,
-                valor,
-                categoria,
-                metodoPagamento,
-                status,
-              );
-            },
-      ),
-    );
-  }
+  Future<void> _openEditPage(Saida item) async {
+  final FormResult<Saida>? result = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => SaidaFormPage(entry: item),
+    ),
+  );
 
-  void _openUpdateModal(Saida item) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) => NewExpenseModal(
-        entry: item,
-        onSave:
-            ({
-              required data,
-              required descricao,
-              required valor,
-              required categoria,
-              required metodoPagamento,
-              required status,
-            }) async {
-              await _expenseController.updateExpense(
-                item.indexRow,
-                data,
-                descricao,
-                valor,
-                categoria,
-                metodoPagamento,
-                status,
-              );
-            },
-      ),
+  if (result == null) return;
+
+  switch (result.action) {
+    case FormAction.create:
+      // não esperado em edição
+      break;
+    case FormAction.update:
+        // não deve acontecer aqui, mas evita crash
+        _expenseController.updateExpense(
+          result.data!.indexRow,
+          result.data!.data,
+          result.data!.descricao,
+          result.data!.valor,
+          result.data!.categoria,
+          result.data!.metodoPagamento,
+          result.data!.status
+        );
+    case FormAction.delete:
+      _expenseController.deleteEntryByIndex(result.index!);
+      break;
+  }
+}
+
+
+  Future<void> _openCreatePage() async {
+    final FormResult<Saida>? result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SaidaFormPage()),
     );
+
+    if (result == null) return;
+
+    switch (result.action) {
+      case FormAction.create:
+        _expenseController.addExpense(
+          result.data!.data,
+          result.data!.descricao,
+          result.data!.valor,
+          result.data!.categoria,
+          result.data!.metodoPagamento,
+          result.data!.status
+        );
+        break;
+      case FormAction.update:
+        // não deve acontecer aqui, mas evita crash
+        _expenseController.updateExpense(
+          result.data!.indexRow,
+          result.data!.data,
+          result.data!.descricao,
+          result.data!.valor,
+          result.data!.categoria,
+          result.data!.metodoPagamento,
+          result.data!.status
+        );
+        break;
+      case FormAction.delete:
+        // não faz sentido ao criar, então ignora
+        break;
+    }
   }
 
   @override
@@ -103,7 +110,7 @@ class _FinanceOutPage extends State<FinanceOutPage> {
                 subtitle: "Gerencie suas despesas",
                 buttonText: "Nova Despesa",
                 color: Color(0xFF16A28C),
-                onPressed: _openCreateModal,
+                onPressed: _openCreatePage,
               ),
 
               const SizedBox(height: 20),
@@ -126,7 +133,7 @@ class _FinanceOutPage extends State<FinanceOutPage> {
                 itemBuilder: (context, item) {
                   return SaidaItem(
                     item: item,
-                    onEdit: () => _openUpdateModal(item),
+                    onEdit: () => _openEditPage(item),
                     onDelete: () =>
                         _expenseController.deleteEntryByIndex(item.indexRow),
                   );
