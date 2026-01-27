@@ -20,6 +20,10 @@ class BaseFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void cancel() {
+      Navigator.pop(context);
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F9FC),
       appBar: AppBar(
@@ -29,61 +33,55 @@ class BaseFormPage extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              "Cancelar",
-
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+          IconButton(
+            onPressed: () => isEditing ? onDelete?.call() : onSave(),
+            icon: isEditing ? Icon(Icons.delete) : Icon(Icons.add_circle_outline),
+            color: isEditing ? Colors.red : Color(0xFF16A28C),
           ),
         ],
       ),
+
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                flex: 0,
-                child: Card(
-                  color: Colors.white,
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 32, 16, 48),
-                    child: child,
-                  ),
+              Card(
+                color: Colors.white,
+                elevation: 1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
+                  child: child, // 🔹 Seu formulário
                 ),
               ),
 
+              const SizedBox(height: 24),
 
-              Spacer(),
+              /// 🔹 BOTÃO SALVAR (AGORA ROLA)
               SizedBox(
-                width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
                   onPressed: onSave,
-                  child: Text(saveLabel),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF16A28C),
+                    backgroundColor: const Color(0xFF16A28C),
                     foregroundColor: Colors.white,
                     elevation: 0,
-
                   ),
+                  child: Text(saveLabel),
                 ),
               ),
 
-              /// 🔹 BOTÃO EXCLUIR (somente edição)
+              /// 🔹 BOTÃO EXCLUIR (AGORA ROLA)
               if (isEditing && onDelete != null) ...[
                 const SizedBox(height: 12),
                 SizedBox(
-                  width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: onDelete,
+                    onPressed: cancel,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Theme.of(context).colorScheme.error,
@@ -92,10 +90,12 @@ class BaseFormPage extends StatelessWidget {
                         color: Theme.of(context).colorScheme.error,
                       ),
                     ),
-                    child: const Text("Excluir"),
+                    child: const Text("Cancelar"),
                   ),
                 ),
               ],
+
+              const SizedBox(height: 24),
             ],
           ),
         ),
