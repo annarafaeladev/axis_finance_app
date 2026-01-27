@@ -66,6 +66,8 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
+      backgroundColor: const Color(0xFFF7F9FC),
       appBar: AppBarCustom(
         title: appNavItems[selectedIndex].pageItem.appBarTitle,
       ),
