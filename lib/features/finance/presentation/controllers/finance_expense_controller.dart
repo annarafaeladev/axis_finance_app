@@ -2,7 +2,7 @@ import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/add_expense.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/delete_expense.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/get_expenses.dart';
-import 'package:axis_finance_app/features/finance/domain/usecases/expense/update_entry.dart';
+import 'package:axis_finance_app/features/finance/domain/usecases/expense/update_expense.dart';
 import 'package:flutter/foundation.dart';
 
 class FinanceExpenseController extends ChangeNotifier {
@@ -98,6 +98,7 @@ class FinanceExpenseController extends ChangeNotifier {
       categoria,
       metodoPagamento,
       status,
+      indexRow
     );
 
     notifyListeners();

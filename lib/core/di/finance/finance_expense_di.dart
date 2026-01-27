@@ -4,7 +4,7 @@ import 'package:axis_finance_app/features/finance/domain/repositories/tabs_repos
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/add_expense.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/delete_expense.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/expense/get_expenses.dart';
-import 'package:axis_finance_app/features/finance/domain/usecases/expense/update_entry.dart';
+import 'package:axis_finance_app/features/finance/domain/usecases/expense/update_expense.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/features/finance/data/datasources/google_sheets_api.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_expense_controller.dart';

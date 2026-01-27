@@ -11,15 +11,14 @@ class UpdateEntry {
     String descricao,
     double valor,
     String tipo,
+    int indexRow
   ) async {
-    final nextIndex = await repository.getNextIndex();
-
     final entrada = Entrada(
       data: data,
       descricao: descricao,
       valor: valor,
       tipo: tipo,
-      indexRow: nextIndex,
+      indexRow: indexRow,
     );
 
     await repository.update(entrada);
