@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/features/auth/presentation/auth_controller.dart';
 import 'package:axis_finance_app/features/auth/presentation/user_controller.dart';
+import 'package:go_router/go_router.dart';
 
 Future<void> showUserMenu(BuildContext context) async {
   final userController = getIt<UserController>();
@@ -9,8 +10,10 @@ Future<void> showUserMenu(BuildContext context) async {
 
   final user = await userController.getUser();
 
+  if (!context.mounted) return;
+
   if (user == null) {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+    context.go('/');
     return;
   }
 
@@ -19,7 +22,8 @@ Future<void> showUserMenu(BuildContext context) async {
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (_) {
+    builder: (sheetContext) {
+      // 👈 usa outro context aqui dentro
       return Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -46,7 +50,14 @@ Future<void> showUserMenu(BuildContext context) async {
               title: const Text('Sair'),
               onTap: () async {
                 await authController.logoutWithGoogle();
-                Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+
+                if (sheetContext.mounted) {
+                  Navigator.pop(sheetContext); // fecha o sheet
+                }
+
+                if (context.mounted) {
+                  context.go('/');
+                }
               },
             ),
           ],

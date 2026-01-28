@@ -2,15 +2,16 @@ import 'package:axis_finance_app/core/enum/form_action.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/widgets/common/base_form_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 /// ===============================
 /// PÁGINA DE FORMULÁRIO DE SAÍDA
 /// ===============================
 class SaidaFormPage extends StatefulWidget {
-  final Saida? entry;
+  final Saida? item;
 
-  const SaidaFormPage({super.key, this.entry});
+  const SaidaFormPage({super.key, this.item});
 
   @override
   State<SaidaFormPage> createState() => _SaidaFormPageState();
@@ -45,19 +46,19 @@ class _SaidaFormPageState extends State<SaidaFormPage> {
 
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
-  bool get isEditing => widget.entry != null;
+  bool get isEditing => widget.item != null;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.entry != null) {
-      _dataSelecionada = widget.entry!.data;
-      _descricaoController.text = widget.entry!.descricao;
-      _categoriaSelecionado = widget.entry!.categoria;
-      _pagamentoSelecionado = widget.entry!.metodoPagamento;
-      _statusSelecionado = widget.entry!.status;
-      _valorController.text = widget.entry!.valor
+    if (widget.item != null) {
+      _dataSelecionada = widget.item!.data;
+      _descricaoController.text = widget.item!.descricao;
+      _categoriaSelecionado = widget.item!.categoria;
+      _pagamentoSelecionado = widget.item!.metodoPagamento;
+      _statusSelecionado = widget.item!.status;
+      _valorController.text = widget.item!.valor
           .toStringAsFixed(2)
           .replaceAll('.', ',');
     }
@@ -100,11 +101,10 @@ class _SaidaFormPageState extends State<SaidaFormPage> {
       valor: double.parse(_valorController.text.replaceAll(',', '.')),
       metodoPagamento: _pagamentoSelecionado,
       status: _statusSelecionado,
-      indexRow: widget.entry?.indexRow ?? -1,
+      indexRow: widget.item?.indexRow ?? -1,
     );
 
-    Navigator.pop(
-      context,
+    context.pop(
       isEditing
           ? FormResult<Saida>.update(saida)
           : FormResult<Saida>.create(saida),
@@ -112,7 +112,7 @@ class _SaidaFormPageState extends State<SaidaFormPage> {
   }
 
   void _excluir() {
-    Navigator.pop(context, FormResult<Saida>.delete(widget.entry!.indexRow));
+    context.pop(FormResult<Saida>.delete(widget.item!.indexRow));
   }
 
   @override

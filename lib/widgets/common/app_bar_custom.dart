@@ -9,7 +9,8 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 2,
+      forceMaterialTransparency: true,
+      elevation: 1,
       title: Row(
         children: [
           Icon(Icons.wallet),

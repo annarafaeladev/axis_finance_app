@@ -3,11 +3,11 @@ import 'package:axis_finance_app/core/enum/form_action.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_entry_controller.dart';
 import 'package:axis_finance_app/widgets/entries/entrada_item.dart';
-import 'package:axis_finance_app/widgets/entries/entry_form_page.dart';
 import 'package:axis_finance_app/widgets/common/list_item_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/widgets/common/content_page_header.dart';
 import 'package:axis_finance_app/widgets/common/finance_card.dart';
+import 'package:go_router/go_router.dart';
 
 class FinanceInPage extends StatefulWidget {
   const FinanceInPage({super.key});
@@ -27,38 +27,32 @@ class _FinanceInPageState extends State<FinanceInPage> {
   }
 
   Future<void> _openEditPage(Entrada item) async {
-  final FormResult<Entrada>? result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => EntradaFormPage(entry: item),
-    ),
-  );
+    final FormResult<Entrada>? result = await context.push(
+      '/entries/form',
+      extra: item,
+    );
 
-  if (result == null) return;
+    if (result == null) return;
 
-  switch (result.action) {
-    case FormAction.create:
-      break;
-    case FormAction.update:
+    switch (result.action) {
+      case FormAction.create:
+        break;
+      case FormAction.update:
         _entryController.updateEntry(
           result.data!.indexRow,
           result.data!.data,
           result.data!.descricao,
           result.data!.valor,
-          result.data!.tipo
+          result.data!.tipo,
         );
-    case FormAction.delete:
-      _entryController.deleteEntryByIndex(result.data!.indexRow);
-      break;
+      case FormAction.delete:
+        _entryController.deleteEntryByIndex(result.data!.indexRow);
+        break;
+    }
   }
-}
-
 
   Future<void> _openCreatePage() async {
-    final FormResult<Entrada>? result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const EntradaFormPage()),
-    );
+    final FormResult<Entrada>? result = await context.push('/entries/form');
 
     if (result == null) return;
 
@@ -68,7 +62,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
           result.data!.data,
           result.data!.descricao,
           result.data!.valor,
-          result.data!.tipo
+          result.data!.tipo,
         );
         break;
       case FormAction.update:
@@ -77,7 +71,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
           result.data!.data,
           result.data!.descricao,
           result.data!.valor,
-          result.data!.tipo
+          result.data!.tipo,
         );
         break;
       case FormAction.delete:

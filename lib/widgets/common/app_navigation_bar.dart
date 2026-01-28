@@ -3,7 +3,7 @@ import 'package:axis_finance_app/models/nav_item.dart';
 import 'package:axis_finance_app/widgets/common/finance_menu_modal.dart';
 
 class AppNavigationBar extends StatelessWidget {
-  final int currentIndex;
+  final int currentIndex; // índice REAL dentro de appNavItems
   final List<NavItem> items;
   final String bottomBarTitle;
   final ValueChanged<int> onTap;
@@ -21,13 +21,17 @@ class AppNavigationBar extends StatelessWidget {
     final visibleItems = items.where((i) => i.isDisplayBottomBar).toList();
     final hiddenItems = items.where((i) => !i.isDisplayBottomBar).toList();
 
+    final currentItem = items[currentIndex];
+
+    // Se a rota atual não estiver na bottom bar, seleciona o botão "Mais"
+    final selectedNavIndex = currentItem.isDisplayBottomBar
+        ? visibleItems.indexOf(currentItem)
+        : visibleItems.length;
+
     return NavigationBar(
-        selectedIndex: items[currentIndex].isDisplayBottomBar
-      ? visibleItems.indexOf(items[currentIndex])
-      : visibleItems.length,
+      selectedIndex: selectedNavIndex,
 
       onDestinationSelected: (index) async {
-        // Clicou no botão "Mais"
         if (index == visibleItems.length) {
           final selected = await showModalBottomSheet<NavItem>(
             context: context,
@@ -38,11 +42,10 @@ class AppNavigationBar extends StatelessWidget {
 
           if (selected != null) {
             final realIndex = items.indexOf(selected);
-            onTap(realIndex); // navega corretamente
+            onTap(realIndex);
           }
           return;
         }
-        // Clique normal
         final selectedItem = visibleItems[index];
         final realIndex = items.indexOf(selectedItem);
         onTap(realIndex);
@@ -57,7 +60,6 @@ class AppNavigationBar extends StatelessWidget {
           ),
         ),
 
-        // Botão "Mais"
         const NavigationDestination(
           selectedIcon: Icon(Icons.more_horiz),
           icon: Icon(Icons.more_horiz),

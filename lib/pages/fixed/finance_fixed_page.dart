@@ -3,11 +3,12 @@ import 'package:axis_finance_app/core/enum/form_action.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/fixa.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_fixed_expense_controller.dart';
 import 'package:axis_finance_app/widgets/fixed/fixa_item.dart';
-import 'package:axis_finance_app/widgets/fixed/fixe_form_page.dart';
+import 'package:axis_finance_app/pages/fixed/fixe_form_page.dart';
 import 'package:axis_finance_app/widgets/common/list_item_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/widgets/common/content_page_header.dart';
 import 'package:axis_finance_app/widgets/common/finance_card.dart';
+import 'package:go_router/go_router.dart';
 
 class FinanceFixedPage extends StatefulWidget {
   const FinanceFixedPage({super.key});
@@ -27,9 +28,9 @@ class _FinanceFixedPage extends State<FinanceFixedPage> {
   }
 
   Future<void> _openEditPage(Fixa item) async {
-    final FormResult<Fixa>? result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => FixaFormPage(item: item)),
+    final FormResult<Fixa>? result = await context.push(
+      '/fixed/form',
+      extra: item,
     );
 
     if (result == null) return;
@@ -53,9 +54,8 @@ class _FinanceFixedPage extends State<FinanceFixedPage> {
   }
 
   Future<void> _openCreatePage() async {
-    final FormResult<Fixa>? result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const FixaFormPage()),
+    final FormResult<Fixa>? result = await context.push(
+      '/fixed/form'
     );
 
     if (result == null) return;
