@@ -4,10 +4,10 @@ import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_expense_controller.dart';
 import 'package:axis_finance_app/widgets/expense/expense_form_page.dart';
 import 'package:axis_finance_app/widgets/expense/saida_item.dart';
-import 'package:axis_finance_app/widgets/list_item_dynamic.dart';
+import 'package:axis_finance_app/widgets/common/list_item_dynamic.dart';
 import 'package:flutter/material.dart';
-import 'package:axis_finance_app/widgets/content_page_header.dart';
-import 'package:axis_finance_app/widgets/finance_card.dart';
+import 'package:axis_finance_app/widgets/common/content_page_header.dart';
+import 'package:axis_finance_app/widgets/common/finance_card.dart';
 
 class FinanceOutPage extends StatefulWidget {
   const FinanceOutPage({super.key});

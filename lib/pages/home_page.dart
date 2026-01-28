@@ -1,7 +1,7 @@
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_controller.dart';
 import 'package:flutter/material.dart';
-import '../widgets/finance_card.dart';
+import '../widgets/common/finance_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

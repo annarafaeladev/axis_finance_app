@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/navigation/nav_items.dart';
 import 'package:axis_finance_app/pages/login_page.dart';
-import 'package:axis_finance_app/widgets/app_bar_custom.dart';
-import 'package:axis_finance_app/widgets/app_header.dart';
-import 'package:axis_finance_app/widgets/app_navigation_bar.dart';
+import 'package:axis_finance_app/widgets/common/app_bar_custom.dart';
+import 'package:axis_finance_app/widgets/common/app_header.dart';
+import 'package:axis_finance_app/widgets/common/app_navigation_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
