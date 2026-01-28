@@ -73,7 +73,7 @@ class FinanceEntryController extends ChangeNotifier {
 
     if (index == -1) return;
 
-    entradas[index] = await _updateEntry(data, descricao, valor, tipo);
+    entradas[index] = await _updateEntry(data, descricao, valor, tipo, indexRow);
 
     notifyListeners();
   }

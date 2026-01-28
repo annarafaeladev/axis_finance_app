@@ -1,9 +1,10 @@
 import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/core/enum/form_action.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_entry_controller.dart';
 import 'package:axis_finance_app/widgets/entrada_item.dart';
+import 'package:axis_finance_app/widgets/entries/entry_form_page.dart';
 import 'package:axis_finance_app/widgets/list_item_dynamic.dart';
-import 'package:axis_finance_app/widgets/new_entry_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/widgets/content_page_header.dart';
 import 'package:axis_finance_app/widgets/finance_card.dart';
@@ -25,53 +26,63 @@ class _FinanceInPageState extends State<FinanceInPage> {
     _entryController.loadEntries();
   }
 
-  void _openCreateModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) => NewEntryModal(
-        onSave:
-            ({
-              required data,
-              required descricao,
-              required valor,
-              required tipo,
-            }) async {
-              await _entryController.addEntry(data, descricao, valor, tipo);
-            },
-      ),
-    );
-  }
+  Future<void> _openEditPage(Entrada item) async {
+  final FormResult<Entrada>? result = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => EntradaFormPage(entry: item),
+    ),
+  );
 
-  void _openUpdateModal(Entrada item) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) => NewEntryModal(
-        entry: item,
-        onSave:
-            ({
-              required data,
-              required descricao,
-              required valor,
-              required tipo,
-            }) async {
-              await _entryController.updateEntry(
-                item.indexRow,
-                data,
-                descricao,
-                valor,
-                tipo,
-              );
-            },
-      ),
+  if (result == null) return;
+
+  switch (result.action) {
+    case FormAction.create:
+      break;
+    case FormAction.update:
+        _entryController.updateEntry(
+          result.data!.indexRow,
+          result.data!.data,
+          result.data!.descricao,
+          result.data!.valor,
+          result.data!.tipo
+        );
+    case FormAction.delete:
+      _entryController.deleteEntryByIndex(result.data!.indexRow);
+      break;
+  }
+}
+
+
+  Future<void> _openCreatePage() async {
+    final FormResult<Entrada>? result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const EntradaFormPage()),
     );
+
+    if (result == null) return;
+
+    switch (result.action) {
+      case FormAction.create:
+        _entryController.addEntry(
+          result.data!.data,
+          result.data!.descricao,
+          result.data!.valor,
+          result.data!.tipo
+        );
+        break;
+      case FormAction.update:
+        _entryController.updateEntry(
+          result.data!.indexRow,
+          result.data!.data,
+          result.data!.descricao,
+          result.data!.valor,
+          result.data!.tipo
+        );
+        break;
+      case FormAction.delete:
+        break;
+    }
   }
 
   @override
@@ -89,7 +100,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
                 subtitle: "Gerencie suas fontes de renda",
                 buttonText: "Nova Entrada",
                 color: const Color(0xFF16A28C),
-                onPressed: _openCreateModal,
+                onPressed: _openCreatePage,
               ),
 
               const SizedBox(height: 20),
@@ -111,7 +122,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
                 itemBuilder: (context, item) {
                   return EntradaItem(
                     item: item,
-                    onEdit: () => _openUpdateModal(item),
+                    onEdit: () => _openEditPage(item),
                     onDelete: () =>
                         _entryController.deleteEntryByIndex(item.indexRow),
                   );

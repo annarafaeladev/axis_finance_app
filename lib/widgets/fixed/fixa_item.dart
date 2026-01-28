@@ -1,18 +1,18 @@
-import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/fixa.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class SaidaItem extends StatelessWidget {
-  final Saida item;
+class FixaItem extends StatelessWidget {
+  final Fixa item;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const SaidaItem({super.key, required this.item, this.onEdit, this.onDelete});
+  const FixaItem({super.key, required this.item, this.onEdit, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dataFormatada = DateFormat('dd/MM/yyyy').format(item.data);
+    final dataFormatada = DateFormat('dd/MM/yyyy').format(item.vencimento);
 
     return InkWell(
       borderRadius: BorderRadius.circular(12),
@@ -57,7 +57,7 @@ class SaidaItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        item.metodoPagamento,
+                        item.pago ? "Pago" : "Pendente",
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: Colors.grey.shade600,
                         ),
@@ -67,13 +67,6 @@ class SaidaItem extends StatelessWidget {
                         Icons.calendar_today,
                         size: 12,
                         color: Colors.grey,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        item.status,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.grey.shade600,
-                        ),
                       ),
                     ],
                   ),
@@ -119,7 +112,6 @@ class SaidaItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 PopupMenuButton<String>(
-                  color: Colors.white,
                   icon: const Icon(Icons.more_vert, size: 20),
                   onSelected: (value) {
                     if (value == 'edit') onEdit?.call();

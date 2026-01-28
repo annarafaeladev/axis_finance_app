@@ -13,8 +13,8 @@ class UpdateExpense {
     String categoria,
     String metodoPagamento,
     String status,
+    int indexRow
   ) async {
-    final nextIndex = await repository.getNextIndex();
 
     final saida = Saida(
       data: data,
@@ -23,7 +23,7 @@ class UpdateExpense {
       categoria: categoria,
       metodoPagamento: metodoPagamento,
       status: status,
-      indexRow: nextIndex,
+      indexRow: indexRow,
     );
 
     await repository.update(saida);
