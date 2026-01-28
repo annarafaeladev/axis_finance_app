@@ -1,3 +1,4 @@
+import 'package:axis_finance_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class BaseFormPage extends StatelessWidget {
@@ -25,7 +26,7 @@ class BaseFormPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: AppColors.backgroundScaffold,
       appBar: AppBar(
         title: Text(title),
         leading: IconButton(
@@ -36,7 +37,7 @@ class BaseFormPage extends StatelessWidget {
           IconButton(
             onPressed: () => isEditing ? onDelete?.call() : onSave(),
             icon: isEditing ? Icon(Icons.delete) : Icon(Icons.add_circle_outline),
-            color: isEditing ? Colors.red : Color(0xFF16A28C),
+            color: isEditing ? AppColors.error : AppColors.primary,
           ),
         ],
       ),
@@ -67,8 +68,8 @@ class BaseFormPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onSave,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF16A28C),
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.foregroundColor,
                     elevation: 0,
                   ),
                   child: Text(saveLabel),
@@ -83,11 +84,11 @@ class BaseFormPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: cancel,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Theme.of(context).colorScheme.error,
+                      backgroundColor: AppColors.foregroundColor,
+                      foregroundColor: AppColors.error,
                       elevation: 0,
                       side: BorderSide(
-                        color: Theme.of(context).colorScheme.error,
+                        color: AppColors.error,
                       ),
                     ),
                     child: const Text("Cancelar"),

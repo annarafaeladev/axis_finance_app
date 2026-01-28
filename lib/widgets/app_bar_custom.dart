@@ -9,19 +9,17 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white, // remove o tom do Material 3
-      elevation: 0,
+      elevation: 2,
       title: Row(
         children: [
-          Icon(Icons.account_balance_wallet, color: Color(0xFF10B981)),
+          Icon(Icons.wallet),
           const SizedBox(width: 8),
           Text(title),
         ],
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.person),
+          icon: const Icon(Icons.account_circle_rounded),
           onPressed: () => showUserMenu(context),
         ),
       ],
