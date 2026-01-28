@@ -1,4 +1,6 @@
 import 'package:axis_finance_app/core/theme/app_colors.dart';
+import 'package:axis_finance_app/widgets/common/app_button.dart';
+import 'package:axis_finance_app/widgets/common/app_card_content.dart';
 import 'package:flutter/material.dart';
 
 class BaseFormPage extends StatelessWidget {
@@ -26,9 +28,9 @@ class BaseFormPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundScaffold,
       appBar: AppBar(
         title: Text(title),
+        elevation: 2,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -36,7 +38,9 @@ class BaseFormPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => isEditing ? onDelete?.call() : onSave(),
-            icon: isEditing ? Icon(Icons.delete) : Icon(Icons.add_circle_outline),
+            icon: isEditing
+                ? Icon(Icons.delete)
+                : Icon(Icons.add_circle_outline),
             color: isEditing ? AppColors.error : AppColors.primary,
           ),
         ],
@@ -48,51 +52,19 @@ class BaseFormPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Card(
-                color: Colors.white,
-                elevation: 1,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
-                  child: child, // 🔹 Seu formulário
-                ),
-              ),
+              CommonCardContent(child: child),
 
               const SizedBox(height: 24),
 
-              /// 🔹 BOTÃO SALVAR (AGORA ROLA)
-              SizedBox(
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: onSave,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.foregroundColor,
-                    elevation: 0,
-                  ),
-                  child: Text(saveLabel),
-                ),
-              ),
+              AppButton(label: saveLabel, onPressed: onSave),
 
-              /// 🔹 BOTÃO EXCLUIR (AGORA ROLA)
               if (isEditing && onDelete != null) ...[
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: cancel,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.foregroundColor,
-                      foregroundColor: AppColors.error,
-                      elevation: 0,
-                      side: BorderSide(
-                        color: AppColors.error,
-                      ),
-                    ),
-                    child: const Text("Cancelar"),
-                  ),
+
+                AppButton(
+                  label: "Cancelar",
+                  onPressed: cancel,
+                  type: AppButtonType.danger,
                 ),
               ],
 
