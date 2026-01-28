@@ -1,7 +1,8 @@
-import 'package:axis_finance_app/core/theme/app_colors.dart';
 import 'package:axis_finance_app/widgets/common/app_button.dart';
 import 'package:axis_finance_app/widgets/common/app_card_content.dart';
+import 'package:axis_finance_app/widgets/common/app_scaffold_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class BaseFormPage extends StatelessWidget {
   final String title;
@@ -27,50 +28,35 @@ class BaseFormPage extends StatelessWidget {
       Navigator.pop(context);
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        elevation: 2,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => isEditing ? onDelete?.call() : onSave(),
-            icon: isEditing
-                ? Icon(Icons.delete)
-                : Icon(Icons.add_circle_outline),
-            color: isEditing ? AppColors.error : AppColors.primary,
-          ),
-        ],
-      ),
+    return AppScaffoldPage(
+      title: title,
+      leadingIcon: Icons.arrow_back,
+      onLeadingPressed: () => context.pop(),
+      actionIcon: isEditing ? Icons.delete : Icons.add_circle_outline,
+      onActionPressed: isEditing ? onDelete : onSave,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CommonCardContent(child: child),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CommonCardContent(child: child),
+            const SizedBox(height: 24),
 
-              const SizedBox(height: 24),
+            AppButton(label: saveLabel, onPressed: onSave),
 
-              AppButton(label: saveLabel, onPressed: onSave),
+            if (isEditing && onDelete != null) ...[
+              const SizedBox(height: 12),
 
-              if (isEditing && onDelete != null) ...[
-                const SizedBox(height: 12),
-
-                AppButton(
-                  label: "Cancelar",
-                  onPressed: cancel,
-                  type: AppButtonType.danger,
-                ),
-              ],
-
-              const SizedBox(height: 24),
+              AppButton(
+                label: "Cancelar",
+                onPressed: cancel,
+                type: AppButtonType.danger,
+              ),
             ],
-          ),
+
+            const SizedBox(height: 24),
+          ],
         ),
       ),
     );
