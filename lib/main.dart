@@ -1,4 +1,18 @@
+import 'package:axis_finance_app/core/theme/app_colors.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/fixa.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
+import 'package:axis_finance_app/pages/credit_card_page.dart';
+import 'package:axis_finance_app/pages/fixed/finance_fixed_page.dart';
+import 'package:axis_finance_app/pages/entries/finance_in_page.dart';
+import 'package:axis_finance_app/pages/outs/finance_out_page.dart';
+import 'package:axis_finance_app/pages/finance_reserve_page.dart';
+import 'package:axis_finance_app/pages/home_page.dart';
+import 'package:axis_finance_app/pages/settings_page.dart';
 import 'package:axis_finance_app/pages/spash.dart';
+import 'package:axis_finance_app/pages/entries/entry_form_page.dart';
+import 'package:axis_finance_app/pages/outs/expense_form_page.dart';
+import 'package:axis_finance_app/pages/fixed/fixe_form_page.dart';
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/navigation/nav_items.dart';
@@ -6,6 +20,52 @@ import 'package:axis_finance_app/pages/login_page.dart';
 import 'package:axis_finance_app/widgets/common/app_bar_custom.dart';
 import 'package:axis_finance_app/widgets/common/app_header.dart';
 import 'package:axis_finance_app/widgets/common/app_navigation_bar.dart';
+import 'package:go_router/go_router.dart';
+
+final _router = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(path: '/', builder: (context, state) => const AuthCheckPage()),
+    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(path: '/reserve', builder: (_, __) => const FinanceReservePage()),
+    GoRoute(
+      path: '/entries/form',
+      builder: (context, state) {
+        final entry = state.extra as Entrada?;
+        return EntradaFormPage(entry: entry);
+      },
+    ),
+    GoRoute(
+      path: '/outs/form',
+      builder: (context, state) {
+        final out = state.extra as Saida?;
+        return SaidaFormPage(item: out);
+      },
+    ),
+    GoRoute(
+      path: '/fixed/form',
+      builder: (context, state) {
+        final item = state.extra as Fixa?;
+        return FixaFormPage(item: item);
+      },
+    ),
+
+    ShellRoute(
+      builder: (context, state, child) => MainLayout(child: child),
+      routes: [
+        GoRoute(path: '/home', builder: (_, __) => const HomePage()),
+        GoRoute(path: '/entries', builder: (_, __) => const FinanceInPage()),
+        GoRoute(path: '/outs', builder: (_, __) => const FinanceOutPage()),
+        GoRoute(path: '/fixed', builder: (_, __) => const FinanceFixedPage()),
+        GoRoute(path: '/credit', builder: (_, __) => const CreditCardPage()),
+      ],
+    ),
+  ],
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,72 +80,51 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
+    return MaterialApp.router(
       title: 'Finance',
-      initialRoute: '/',
-      routes: {
-        '/': (_) => const AuthCheckPage(),
-        '/home': (_) => const MainLayout(),
-        '/login': (_) => const LoginPage(),
-      },
-      builder: (context, child) {
-        return SafeArea(child: child!);
-      },
-      darkTheme: ThemeData.dark(useMaterial3: true),
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.indigo,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
+      routerConfig: _router,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo),
+      darkTheme: ThemeData.dark(useMaterial3: true),
     );
   }
 }
 
-class MainLayout extends StatefulWidget {
-  const MainLayout({super.key});
+class MainLayout extends StatelessWidget {
+  final Widget child;
 
-  @override
-  State<MainLayout> createState() => _MainLayoutState();
-}
+  const MainLayout({super.key, required this.child});
 
-class _MainLayoutState extends State<MainLayout> {
-  int selectedIndex = 0;
+  int _locationToIndex(String location) {
+    if (location.startsWith('/home')) return 0;
+    if (location.startsWith('/entries')) return 1;
+    if (location.startsWith('/outs')) return 2;
+    if (location.startsWith('/fixed')) return 4;
+    if (location.startsWith('/credit')) return 3;
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    final selectedIndex = _locationToIndex(location);
+    final currentItem = appNavItems[selectedIndex];
+
     return Scaffold(
-      
-      backgroundColor: const Color(0xFFF7F9FC),
-      appBar: AppBarCustom(
-        title: appNavItems[selectedIndex].pageItem.appBarTitle,
-      ),
+      backgroundColor: AppColors.backgroundScaffold,
+      appBar: AppBarCustom(title: currentItem.pageItem.appBarTitle),
       body: Column(
         children: [
           FinanceHeader(),
-          Expanded(child: appNavItems[selectedIndex].pageItem.page),
+          Expanded(child: child),
         ],
       ),
-
       bottomNavigationBar: AppNavigationBar(
         items: appNavItems,
         currentIndex: selectedIndex,
-        bottomBarTitle: appNavItems[selectedIndex].pageItem.bottomBarTitle,
+        bottomBarTitle: currentItem.pageItem.bottomBarTitle,
         onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
+          context.go(appNavItems[index].pageItem.route);
         },
       ),
     );
