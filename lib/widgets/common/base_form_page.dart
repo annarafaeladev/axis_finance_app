@@ -1,6 +1,6 @@
-import 'package:axis_finance_app/widgets/common/app_button.dart';
-import 'package:axis_finance_app/widgets/common/app_card_content.dart';
-import 'package:axis_finance_app/widgets/common/app_scaffold_page.dart';
+import 'package:axis_finance_app/widgets/common/app/app_button.dart';
+import 'package:axis_finance_app/widgets/common/app/app_card_content.dart';
+import 'package:axis_finance_app/widgets/common/app/app_scaffold_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
