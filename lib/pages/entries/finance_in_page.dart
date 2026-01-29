@@ -24,7 +24,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
   void initState() {
     super.initState();
     _entryController = getIt<FinanceEntryController>();
-    _entryController.loadEntries();
+    // TODO: utlizar o provider para entregar os dados para a PAGE 
   }
 
   Future<void> _openEditPage(Entrada item) async {

@@ -20,10 +20,10 @@ class FinanceExpenseController extends ChangeNotifier {
     this._updateExpense,
   );
 
-  String get totalSaidasFormatado {
-    final total = saidas.fold<double>(0, (sum, e) => sum + e.valor);
+  double totalSaidas() => saidas.fold<double>(0, (sum, e) => sum + e.valor);
 
-    return 'R\$ ${total.toStringAsFixed(2).replaceAll('.', ',')}';
+  String get totalSaidasFormatado {
+    return 'R\$ ${totalSaidas().toStringAsFixed(2).replaceAll('.', ',')}';
   }
 
   Future<void> init() async {
@@ -98,7 +98,7 @@ class FinanceExpenseController extends ChangeNotifier {
       categoria,
       metodoPagamento,
       status,
-      indexRow
+      indexRow,
     );
 
     notifyListeners();

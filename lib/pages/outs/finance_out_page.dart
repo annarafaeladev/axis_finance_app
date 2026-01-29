@@ -3,7 +3,6 @@ import 'package:axis_finance_app/core/enum/form_action.dart';
 import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_expense_controller.dart';
-import 'package:axis_finance_app/pages/outs/expense_form_page.dart';
 import 'package:axis_finance_app/widgets/expense/saida_item.dart';
 import 'package:axis_finance_app/widgets/common/list_item_dynamic.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,10 @@ class _FinanceOutPage extends State<FinanceOutPage> {
   void initState() {
     super.initState();
     _expenseController = getIt<FinanceExpenseController>();
-    _expenseController.loadExpenses();
+    // _expenseController.loadExpenses();
+
+    
+    // TODO: utlizar o provider para entregar os dados para a PAGE 
   }
 
   Future<void> _openEditPage(Saida item) async {

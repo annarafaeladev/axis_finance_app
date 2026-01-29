@@ -25,7 +25,9 @@ class _FinanceFixedPage extends State<FinanceFixedPage> {
   void initState() {
     super.initState();
     _fixeExpenseController = getIt<FinanceFixedExpenseController>();
-    _fixeExpenseController.loadExpenses();
+    // _fixeExpenseController.loadExpenses();
+    
+    // TODO: utlizar o provider para entregar os dados para a PAGE 
   }
 
   Future<void> _openEditPage(Fixa item) async {
