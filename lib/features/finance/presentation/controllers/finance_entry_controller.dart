@@ -20,11 +20,14 @@ class FinanceEntryController extends ChangeNotifier {
     this._updateEntry,
   );
 
+  double getTotalEntradas() => entradas.fold<double>(0, (sum, e) => sum + e.valor);
+  
   String get totalEntradasFormatado {
-    final total = entradas.fold<double>(0, (sum, e) => sum + e.valor);
+    final total = getTotalEntradas();
 
     return 'R\$ ${total.toStringAsFixed(2).replaceAll('.', ',')}';
   }
+
 
   Future<void> init() async {
     await loadEntries();

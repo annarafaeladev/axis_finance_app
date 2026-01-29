@@ -1,53 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:axis_finance_app/navigation/nav_items.dart';
 import 'package:axis_finance_app/models/nav_item.dart';
-import 'package:axis_finance_app/widgets/finance_menu_modal.dart';
+import 'package:axis_finance_app/widgets/common/finance_menu_modal.dart';
 
 class AppNavigationBar extends StatelessWidget {
-  final int currentIndex;
-  final List<NavItem> items;
-  final String bottomBarTitle;
-  final ValueChanged<int> onTap;
+  final ValueChanged<String> onNavigate;
 
   const AppNavigationBar({
     super.key,
-    required this.currentIndex,
-    required this.items,
-    required this.bottomBarTitle,
-    required this.onTap,
+    required this.onNavigate,
   });
 
   @override
   Widget build(BuildContext context) {
-    final visibleItems = items.where((i) => i.isDisplayBottomBar).toList();
-    final hiddenItems = items.where((i) => !i.isDisplayBottomBar).toList();
+    final location = GoRouterState.of(context).uri.toString();
+
+    final visibleItems = bottomBarNavItems;
+
+    final currentIndex = visibleItems.indexWhere(
+      (item) => location.startsWith(item.pageItem.route),
+    );
+
+    final selectedNavIndex = currentIndex >= 0
+        ? currentIndex
+        : visibleItems.length; 
 
     return NavigationBar(
-        selectedIndex: items[currentIndex].isDisplayBottomBar
-      ? visibleItems.indexOf(items[currentIndex])
-      : visibleItems.length,
-
+      selectedIndex: selectedNavIndex,
       onDestinationSelected: (index) async {
-        // Clicou no botão "Mais"
         if (index == visibleItems.length) {
           final selected = await showModalBottomSheet<NavItem>(
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (_) => FinanceMenuModal(items: hiddenItems),
+            builder: (_) => FinanceMenuModal(items: navItemsModal),
           );
 
           if (selected != null) {
-            final realIndex = items.indexOf(selected);
-            onTap(realIndex); // navega corretamente
+            onNavigate(selected.pageItem.route);
           }
           return;
         }
-        // Clique normal
-        final selectedItem = visibleItems[index];
-        final realIndex = items.indexOf(selectedItem);
-        onTap(realIndex);
-      },
 
+        final selectedItem = visibleItems[index];
+        onNavigate(selectedItem.pageItem.route);
+      },
       destinations: [
         ...visibleItems.map(
           (item) => NavigationDestination(
@@ -56,8 +54,6 @@ class AppNavigationBar extends StatelessWidget {
             label: item.pageItem.bottomBarTitle,
           ),
         ),
-
-        // Botão "Mais"
         const NavigationDestination(
           selectedIcon: Icon(Icons.more_horiz),
           icon: Icon(Icons.more_horiz),

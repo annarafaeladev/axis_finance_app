@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:axis_finance_app/widgets/card_list_dynamic.dart';
+import 'package:axis_finance_app/widgets/common/card_list_dynamic.dart';
 import 'package:axis_finance_app/widgets/card_resume_credit_card.dart';
-import 'package:axis_finance_app/widgets/content_page_header.dart';
+import 'package:axis_finance_app/widgets/common/content_page_header.dart';
 
 class CreditCardPage extends StatelessWidget {
   const CreditCardPage({super.key});

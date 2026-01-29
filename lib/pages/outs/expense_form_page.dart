@@ -1,29 +1,25 @@
-import 'package:axis_finance_app/features/finance/domain/entities/fixa.dart';
+import 'package:axis_finance_app/core/enum/form_action.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
+import 'package:axis_finance_app/widgets/common/base_form_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class NewFixeExpenseModal extends StatefulWidget {
-  final Fixa? entry;
+/// ===============================
+/// PÁGINA DE FORMULÁRIO DE SAÍDA
+/// ===============================
+class SaidaFormPage extends StatefulWidget {
+  final Saida? item;
 
-  final void Function({
-    required DateTime vencimento,
-    required String descricao,
-    required double valor,
-    required String categoria,
-    required bool pago
-  })
-  onSave;
-
-  const NewFixeExpenseModal({super.key, this.entry, required this.onSave});
+  const SaidaFormPage({super.key, this.item});
 
   @override
-  State<NewFixeExpenseModal> createState() => _NewFixeExpenseModalState();
+  State<SaidaFormPage> createState() => _SaidaFormPageState();
 }
 
-class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
+class _SaidaFormPageState extends State<SaidaFormPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final _categoriaController = TextEditingController();
   final _descricaoController = TextEditingController();
   final _valorController = TextEditingController();
 
@@ -33,9 +29,7 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
   String _categoriaSelecionado = 'Saúde';
 
   final List<String> tipoPagamento = ['Dinheiro', 'Pix', 'Crédito', 'Débito'];
-
   final List<String> status = ['Pendente', 'Pago'];
-
   final List<String> categoria = [
     'Beleza',
     'Roupa',
@@ -52,6 +46,24 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
 
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
+  bool get isEditing => widget.item != null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.item != null) {
+      _dataSelecionada = widget.item!.data;
+      _descricaoController.text = widget.item!.descricao;
+      _categoriaSelecionado = widget.item!.categoria;
+      _pagamentoSelecionado = widget.item!.metodoPagamento;
+      _statusSelecionado = widget.item!.status;
+      _valorController.text = widget.item!.valor
+          .toStringAsFixed(2)
+          .replaceAll('.', ',');
+    }
+  }
+
   @override
   void dispose() {
     _descricaoController.dispose();
@@ -59,27 +71,10 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.entry != null) {
-      _dataSelecionada = widget.entry!.vencimento;
-      _descricaoController.text = widget.entry!.descricao;
-      _categoriaController.text = widget.entry!.categoria;
-      _statusSelecionado = widget.entry!.pago == "Pendente" ? "Pendente" : "Pago";
-      _valorController.text = widget.entry!.valor
-          .toStringAsFixed(2)
-          .replaceAll('.', ',');
-    }
-  }
-
   Future<void> _selecionarData() async {
-    final now = DateTime.now();
-
     final picked = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: _dataSelecionada ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -91,52 +86,65 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
 
   void _salvar() {
     if (!_formKey.currentState!.validate()) return;
+
     if (_dataSelecionada == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Selecione a data de vencimento')));
+      ).showSnackBar(const SnackBar(content: Text('Selecione a data')));
       return;
     }
 
-    widget.onSave(
-      vencimento: _dataSelecionada!,
+    final saida = Saida(
+      data: _dataSelecionada!,
       descricao: _descricaoController.text.trim(),
-      categoria: _categoriaController.text.trim(),
+      categoria: _categoriaSelecionado,
       valor: double.parse(_valorController.text.replaceAll(',', '.')),
-      pago: _statusSelecionado == "Pago",
+      metodoPagamento: _pagamentoSelecionado,
+      status: _statusSelecionado,
+      indexRow: widget.item?.indexRow ?? -1,
     );
 
-    Navigator.pop(context);
+    context.pop(
+      isEditing
+          ? FormResult<Saida>.update(saida)
+          : FormResult<Saida>.create(saida),
+    );
+  }
+
+  void _excluir() {
+    context.pop(FormResult<Saida>.delete(widget.item!.indexRow));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
+    return BaseFormPage(
+      title: isEditing ? 'Editar Saída' : 'Nova Saída',
+      isEditing: isEditing,
+      onSave: _salvar,
+      onDelete: isEditing ? _excluir : null,
+      saveLabel: isEditing ? 'Salvar Alterações' : 'Salvar Saída',
       child: Form(
         key: _formKey,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            /// 🟢 TÍTULO DENTRO DO CARD
             Text(
-              widget.entry == null ? 'Nova Saída Fixa' : 'Editar Saída Fixa',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              isEditing
+                  ? "Editar informações da saída"
+                  : "Preencha os dados da saída",
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
 
-        
             InkWell(
               onTap: _selecionarData,
               child: InputDecorator(
                 decoration: const InputDecoration(
-                  labelText: 'Data vencimento',
+                  labelText: 'Data',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
@@ -148,10 +156,8 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
                 ),
               ),
             ),
-
             const SizedBox(height: 12),
 
-            /// 📝 Descrição
             TextFormField(
               controller: _descricaoController,
               decoration: const InputDecoration(
@@ -163,10 +169,8 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
               validator: (v) =>
                   v == null || v.isEmpty ? 'Informe a descrição' : null,
             ),
-
             const SizedBox(height: 12),
 
-            /// 💰 Valor
             TextFormField(
               controller: _valorController,
               keyboardType: const TextInputType.numberWithOptions(
@@ -181,18 +185,14 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
               ),
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Informe o valor';
-                if (double.tryParse(v.replaceAll(',', '.')) == null) {
-                  return 'Valor inválido';
-                }
-
-                if (double.parse(v) > 999999.99) {
+                final parsed = double.tryParse(v.replaceAll(',', '.'));
+                if (parsed == null) return 'Valor inválido';
+                if (parsed > 999999.99) {
                   return 'Valor máximo permitido é R\$ 999.999,99';
                 }
-
                 return null;
               },
             ),
-
             const SizedBox(height: 12),
 
             DropdownButtonFormField<String>(
@@ -208,23 +208,21 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
 
-            // DropdownButtonFormField<String>(
-            //   value: _pagamentoSelecionado,
-            //   items: tipoPagamento
-            //       .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-            //       .toList(),
-            //   onChanged: (v) => setState(() => _pagamentoSelecionado = v!),
-            //   decoration: const InputDecoration(
-            //     labelText: 'Método Pagamento',
-            //     border: OutlineInputBorder(
-            //       borderRadius: BorderRadius.all(Radius.circular(16)),
-            //     ),
-            //   ),
-            // ),
-
+            DropdownButtonFormField<String>(
+              value: _pagamentoSelecionado,
+              items: tipoPagamento
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .toList(),
+              onChanged: (v) => setState(() => _pagamentoSelecionado = v!),
+              decoration: const InputDecoration(
+                labelText: 'Método Pagamento',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
+              ),
+            ),
             const SizedBox(height: 20),
 
             DropdownButtonFormField<String>(
@@ -237,23 +235,6 @@ class _NewFixeExpenseModalState extends State<NewFixeExpenseModal> {
                 labelText: 'Status',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(16)),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF16A28C),
-                ),
-                onPressed: _salvar,
-                child: const Text(
-                  'Salvar Saída Fixa',
-                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),

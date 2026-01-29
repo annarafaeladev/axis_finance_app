@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/models/nav_item.dart';
+import 'package:go_router/go_router.dart';
 
 class FinanceMenuModal extends StatelessWidget {
   final List<NavItem> items;
@@ -7,9 +8,9 @@ class FinanceMenuModal extends StatelessWidget {
   const FinanceMenuModal({super.key, required this.items});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext modalContext) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.65,
+      height: MediaQuery.of(modalContext).size.height * 0.65,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
@@ -62,7 +63,7 @@ class FinanceMenuModal extends StatelessWidget {
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(modalContext),
                 ),
               ],
             ),
@@ -86,7 +87,7 @@ class FinanceMenuModal extends StatelessWidget {
                   label: item.pageItem.bottomBarTitle,
                   onTap: () {
                     Navigator.pop(
-                      context,
+                      modalContext,
                       item,
                     ); // retorna o NavItem selecionado
                   },

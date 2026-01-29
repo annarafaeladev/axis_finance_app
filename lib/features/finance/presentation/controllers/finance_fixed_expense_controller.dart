@@ -20,11 +20,14 @@ class FinanceFixedExpenseController extends ChangeNotifier {
     this._updateFixedExpense,
   );
 
+  double totalFixas() => fixas.fold<double>(0, (sum, e) => sum + e.valor);
+  
   String get totalFixasFormatado {
-    final total = fixas.fold<double>(0, (sum, e) => sum + e.valor);
+    final total = totalFixas();
 
     return 'R\$ ${total.toStringAsFixed(2).replaceAll('.', ',')}';
   }
+
 
   Future<void> init() async {
     await loadExpenses();

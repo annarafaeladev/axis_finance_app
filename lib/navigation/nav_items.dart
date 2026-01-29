@@ -1,19 +1,13 @@
+import 'package:axis_finance_app/models/nav_item.dart';
+import 'package:axis_finance_app/models/page_item.dart';
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:axis_finance_app/pages/finance_fixed_page.dart';
-import 'package:axis_finance_app/pages/finance_out_page.dart';
-import 'package:axis_finance_app/pages/finance_reserve_page.dart';
-import '../models/nav_item.dart';
-import '../models/page_item.dart';
-import '../pages/home_page.dart';
-import '../pages/finance_in_page.dart';
-import '../pages/credit_card_page.dart';
-import '../pages/settings_page.dart';
 
-const appNavItems = [
+const _appNavItems = [
   NavItem(
     pageItem: PageItem(
+      route: AppRoutes.home,
       appBarTitle: "Home",
-      page: HomePage(),
       bottomBarTitle: "Home",
     ),
     icon: Icons.dashboard_outlined,
@@ -22,82 +16,82 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
+      route: AppRoutes.entries,
       appBarTitle: "Entradas",
-      page: FinanceInPage(),
       bottomBarTitle: "Entradas",
     ),
-    isDisplayBottomBar: true,
     icon: Icons.trending_up_outlined,
     selectedIcon: Icons.trending_up,
+    isDisplayBottomBar: true,
   ),
   NavItem(
     pageItem: PageItem(
+      route: AppRoutes.outs,
       appBarTitle: "Saídas",
-      page: FinanceOutPage(),
       bottomBarTitle: "Saídas",
     ),
-    isDisplayBottomBar: true,
     icon: Icons.trending_down_outlined,
     selectedIcon: Icons.trending_down,
+    isDisplayBottomBar: true,
   ),
   NavItem(
     pageItem: PageItem(
+      route: AppRoutes.credit,
       appBarTitle: "Cartão",
-      page: CreditCardPage(),
       bottomBarTitle: "Cartão",
     ),
-    isDisplayBottomBar: true,
     icon: Icons.credit_card_outlined,
     selectedIcon: Icons.credit_card,
+    isDisplayBottomBar: true,
   ),
   NavItem(
     pageItem: PageItem(
-      appBarTitle: "Contas Fixa",
-      page: FinanceFixedPage(),
-      bottomBarTitle: "Contas Fixa",
+      route: AppRoutes.fixed,
+      appBarTitle: "Contas Fixas",
+      bottomBarTitle: "Fixas",
     ),
-
     icon: Icons.attach_money,
     selectedIcon: Icons.attach_money,
+    isDisplayBottomBar: true,
   ),
-
   NavItem(
     pageItem: PageItem(
+      route: AppRoutes.reserve,
       appBarTitle: "Reserva",
-      page: FinanceReservePage(),
       bottomBarTitle: "Reserva",
     ),
-    isDisplayBottomBar: false,
     icon: Icons.security,
     selectedIcon: Icons.security,
+    isDisplayBottomBar: false, // não aparece na bottom bar
   ),
-  // NavItem(
-  //   pageItem: PageItem(
-  //     appBarTitle: "Investimentos",
-  //     page: CreditCardPage(),
-  //     bottomBarTitle: "Investimentos",
-  //   ),
-
-  //   icon: Icons.credit_card_outlined,
-  //   selectedIcon: Icons.credit_card,
-  // ),
-  // NavItem(
-  //   pageItem: PageItem(
-  //     appBarTitle: "Relatórios",
-  //     page: CreditCardPage(),
-  //     bottomBarTitle: "Relatórios",
-  //   ),
-
-  //   icon: Icons.task,
-  //   selectedIcon: Icons.task,
-  // ),
   NavItem(
     pageItem: PageItem(
+      route: AppRoutes.settings,
       appBarTitle: "Configurações",
-      page: SettingsPage(),
-      bottomBarTitle: "Configurações",
+      bottomBarTitle: "Config",
     ),
     icon: Icons.settings,
     selectedIcon: Icons.settings,
+    isDisplayBottomBar: false,
   ),
 ];
+
+NavItem getCurrentNavItemFromLocation(String location) {
+  return _appNavItems.firstWhere(
+    (item) => location.startsWith(item.pageItem.route),
+    orElse: () => _appNavItems.first,
+  );
+}
+
+List<NavItem> get bottomBarNavItems =>
+    _appNavItems.where((item) => item.isDisplayBottomBar).toList();
+
+List<NavItem> get navItemsModal =>
+    _appNavItems.where((item) => !item.isDisplayBottomBar).toList();
+
+int getSelectedBottomIndex(String location) {
+  final items = bottomBarNavItems;
+  return items.indexWhere(
+    (item) => location.startsWith(item.pageItem.route),
+  );
+}
