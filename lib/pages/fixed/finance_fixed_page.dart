@@ -1,5 +1,6 @@
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/core/enum/form_action.dart';
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/fixa.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_fixed_expense_controller.dart';
 import 'package:axis_finance_app/widgets/fixed/fixa_item.dart';
@@ -29,7 +30,7 @@ class _FinanceFixedPage extends State<FinanceFixedPage> {
 
   Future<void> _openEditPage(Fixa item) async {
     final FormResult<Fixa>? result = await context.push(
-      '/fixed/form',
+      AppRoutes.fixedForm,
       extra: item,
     );
 
@@ -55,7 +56,7 @@ class _FinanceFixedPage extends State<FinanceFixedPage> {
 
   Future<void> _openCreatePage() async {
     final FormResult<Fixa>? result = await context.push(
-      '/fixed/form'
+      AppRoutes.fixedForm
     );
 
     if (result == null) return;

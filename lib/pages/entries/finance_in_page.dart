@@ -1,5 +1,6 @@
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/core/enum/form_action.dart';
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_entry_controller.dart';
 import 'package:axis_finance_app/widgets/entries/entrada_item.dart';
@@ -28,7 +29,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
 
   Future<void> _openEditPage(Entrada item) async {
     final FormResult<Entrada>? result = await context.push(
-      '/entries/form',
+      AppRoutes.entryForm,
       extra: item,
     );
 
@@ -52,7 +53,7 @@ class _FinanceInPageState extends State<FinanceInPage> {
   }
 
   Future<void> _openCreatePage() async {
-    final FormResult<Entrada>? result = await context.push('/entries/form');
+    final FormResult<Entrada>? result = await context.push(AppRoutes.entryForm);
 
     if (result == null) return;
 

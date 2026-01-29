@@ -1,11 +1,12 @@
 import 'package:axis_finance_app/models/nav_item.dart';
 import 'package:axis_finance_app/models/page_item.dart';
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
-const appNavItems = [
+const _appNavItems = [
   NavItem(
     pageItem: PageItem(
-      route: '/home',
+      route: AppRoutes.home,
       appBarTitle: "Home",
       bottomBarTitle: "Home",
     ),
@@ -15,7 +16,7 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      route: '/entries',
+      route: AppRoutes.entries,
       appBarTitle: "Entradas",
       bottomBarTitle: "Entradas",
     ),
@@ -25,7 +26,7 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      route: '/outs',
+      route: AppRoutes.outs,
       appBarTitle: "Saídas",
       bottomBarTitle: "Saídas",
     ),
@@ -35,7 +36,7 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      route: '/credit',
+      route: AppRoutes.credit,
       appBarTitle: "Cartão",
       bottomBarTitle: "Cartão",
     ),
@@ -45,7 +46,7 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      route: '/fixed',
+      route: AppRoutes.fixed,
       appBarTitle: "Contas Fixas",
       bottomBarTitle: "Fixas",
     ),
@@ -55,7 +56,7 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      route: '/reserve',
+      route: AppRoutes.reserve,
       appBarTitle: "Reserva",
       bottomBarTitle: "Reserva",
     ),
@@ -65,7 +66,7 @@ const appNavItems = [
   ),
   NavItem(
     pageItem: PageItem(
-      route: '/settings',
+      route: AppRoutes.settings,
       appBarTitle: "Configurações",
       bottomBarTitle: "Config",
     ),
@@ -74,3 +75,23 @@ const appNavItems = [
     isDisplayBottomBar: false,
   ),
 ];
+
+NavItem getCurrentNavItemFromLocation(String location) {
+  return _appNavItems.firstWhere(
+    (item) => location.startsWith(item.pageItem.route),
+    orElse: () => _appNavItems.first,
+  );
+}
+
+List<NavItem> get bottomBarNavItems =>
+    _appNavItems.where((item) => item.isDisplayBottomBar).toList();
+
+List<NavItem> get navItemsModal =>
+    _appNavItems.where((item) => !item.isDisplayBottomBar).toList();
+
+int getSelectedBottomIndex(String location) {
+  final items = bottomBarNavItems;
+  return items.indexWhere(
+    (item) => location.startsWith(item.pageItem.route),
+  );
+}

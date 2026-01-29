@@ -1,5 +1,6 @@
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/core/enum/form_action.dart';
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_expense_controller.dart';
 import 'package:axis_finance_app/pages/outs/expense_form_page.dart';
@@ -29,7 +30,7 @@ class _FinanceOutPage extends State<FinanceOutPage> {
 
   Future<void> _openEditPage(Saida item) async {
     final FormResult<Saida>? result = await context.push(
-      '/outs/form',
+      AppRoutes.outForm,
       extra: item,
     );
 
@@ -58,7 +59,7 @@ class _FinanceOutPage extends State<FinanceOutPage> {
 
   Future<void> _openCreatePage() async {
     final FormResult<Saida>? result = await context.push(
-      '/outs/form'
+      AppRoutes.outForm
     );
 
     if (result == null) return;

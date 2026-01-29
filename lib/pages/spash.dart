@@ -1,6 +1,7 @@
 import 'package:axis_finance_app/core/auth/access_token_provider.dart';
 import 'package:axis_finance_app/core/auth/session_manager.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:axis_finance_app/main.dart';
 import 'package:axis_finance_app/pages/login_page.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,9 @@ class AuthCheckPageState extends State<AuthCheckPage> {
 
       getIt<SessionManager>().unlockRedirect();
       if (account != null && token != null) {
-        context.go('/home'); // ✅ navega depois da checagem
+        context.go(AppRoutes.home); // ✅ navega depois da checagem
       } else {
-        context.go('/login');
+        context.go(AppRoutes.login);
       }
     } finally {
       getIt<SessionManager>().unlockRedirect();

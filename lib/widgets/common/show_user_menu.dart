@@ -1,3 +1,4 @@
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/features/auth/presentation/auth_controller.dart';
@@ -56,7 +57,7 @@ Future<void> showUserMenu(BuildContext context) async {
                 }
 
                 if (context.mounted) {
-                  context.go('/');
+                  context.go(AppRoutes.root);
                 }
               },
             ),

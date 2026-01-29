@@ -1,13 +1,18 @@
+import 'package:axis_finance_app/models/nav_item.dart';
+import 'package:axis_finance_app/navigation/nav_items.dart';
 import 'package:flutter/material.dart';
 import 'package:axis_finance_app/widgets/common/show_user_menu.dart';
+import 'package:go_router/go_router.dart';
 
 class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-
-  const AppBarCustom({super.key, required this.title});
+  const AppBarCustom({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+
+    NavItem currentNavItem = getCurrentNavItemFromLocation(location);
+
     return AppBar(
       forceMaterialTransparency: true,
       elevation: 1,
@@ -15,7 +20,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Icon(Icons.wallet),
           const SizedBox(width: 8),
-          Text(title),
+          Text(currentNavItem.pageItem.appBarTitle),
         ],
       ),
       actions: [
