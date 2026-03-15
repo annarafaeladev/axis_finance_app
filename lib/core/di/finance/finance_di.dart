@@ -5,6 +5,9 @@ import 'package:axis_finance_app/features/finance/presentation/controllers/finan
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/features/finance/domain/usecases/init_finance.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_controller.dart';
+import 'package:axis_finance_app/features/finance/presentation/controllers/finance_expense_controller.dart';
+import 'package:axis_finance_app/features/finance/presentation/controllers/finance_fixed_expense_controller.dart';
+import 'package:axis_finance_app/features/finance/presentation/controllers/finance_settings_controller.dart';
 
 void registerFinance() {
   getIt.registerLazySingleton<SheetsRepository>(
@@ -15,6 +18,9 @@ void registerFinance() {
     () => FinanceController(
       getIt<InitFinance>(),
       getIt<FinanceEntryController>(),
+      getIt<FinanceExpenseController>(),
+      getIt<FinanceFixedExpenseController>(),
+      getIt<FinanceSettingsController>()
     ),
   );
 }

@@ -1,4 +1,6 @@
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/features/auth/presentation/auth_controller.dart';
@@ -21,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
       await financeController.init();
 
-      Navigator.pushReplacementNamed(context, "/home");
+      context.go(AppRoutes.home);
     } catch (e) {
       ScaffoldMessenger.of(
         context,

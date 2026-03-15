@@ -1,13 +1,14 @@
 import 'package:axis_finance_app/core/di/injector.dart';
 import 'package:axis_finance_app/core/enum/form_action.dart';
+import 'package:axis_finance_app/core/routes/app_routes.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/saida.dart';
 import 'package:axis_finance_app/features/finance/presentation/controllers/finance_expense_controller.dart';
-import 'package:axis_finance_app/widgets/expense/expense_form_page.dart';
 import 'package:axis_finance_app/widgets/expense/saida_item.dart';
-import 'package:axis_finance_app/widgets/list_item_dynamic.dart';
+import 'package:axis_finance_app/widgets/common/list_item_dynamic.dart';
 import 'package:flutter/material.dart';
-import 'package:axis_finance_app/widgets/content_page_header.dart';
-import 'package:axis_finance_app/widgets/finance_card.dart';
+import 'package:axis_finance_app/widgets/common/content_page_header.dart';
+import 'package:axis_finance_app/widgets/common/finance_card.dart';
+import 'package:go_router/go_router.dart';
 
 class FinanceOutPage extends StatefulWidget {
   const FinanceOutPage({super.key});
@@ -23,24 +24,25 @@ class _FinanceOutPage extends State<FinanceOutPage> {
   void initState() {
     super.initState();
     _expenseController = getIt<FinanceExpenseController>();
-    _expenseController.loadExpenses();
+    // _expenseController.loadExpenses();
+
+    
+    // TODO: utlizar o provider para entregar os dados para a PAGE 
   }
 
   Future<void> _openEditPage(Saida item) async {
-  final FormResult<Saida>? result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => SaidaFormPage(entry: item),
-    ),
-  );
+    final FormResult<Saida>? result = await context.push(
+      AppRoutes.outForm,
+      extra: item,
+    );
 
-  if (result == null) return;
+    if (result == null) return;
 
-  switch (result.action) {
-    case FormAction.create:
-      // não esperado em edição
-      break;
-    case FormAction.update:
+    switch (result.action) {
+      case FormAction.create:
+        // não esperado em edição
+        break;
+      case FormAction.update:
         // não deve acontecer aqui, mas evita crash
         _expenseController.updateExpense(
           result.data!.indexRow,
@@ -49,19 +51,17 @@ class _FinanceOutPage extends State<FinanceOutPage> {
           result.data!.valor,
           result.data!.categoria,
           result.data!.metodoPagamento,
-          result.data!.status
+          result.data!.status,
         );
-    case FormAction.delete:
-      _expenseController.deleteEntryByIndex(result.index!);
-      break;
+      case FormAction.delete:
+        _expenseController.deleteEntryByIndex(result.index!);
+        break;
+    }
   }
-}
-
 
   Future<void> _openCreatePage() async {
-    final FormResult<Saida>? result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SaidaFormPage()),
+    final FormResult<Saida>? result = await context.push(
+      AppRoutes.outForm
     );
 
     if (result == null) return;
@@ -74,7 +74,7 @@ class _FinanceOutPage extends State<FinanceOutPage> {
           result.data!.valor,
           result.data!.categoria,
           result.data!.metodoPagamento,
-          result.data!.status
+          result.data!.status,
         );
         break;
       case FormAction.update:
@@ -86,7 +86,7 @@ class _FinanceOutPage extends State<FinanceOutPage> {
           result.data!.valor,
           result.data!.categoria,
           result.data!.metodoPagamento,
-          result.data!.status
+          result.data!.status,
         );
         break;
       case FormAction.delete:

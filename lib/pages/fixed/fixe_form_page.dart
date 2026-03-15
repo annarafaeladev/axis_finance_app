@@ -1,48 +1,61 @@
 import 'package:axis_finance_app/core/enum/form_action.dart';
-import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
+import 'package:axis_finance_app/features/finance/domain/entities/fixa.dart';
 import 'package:axis_finance_app/widgets/common/base_form_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class EntradaFormPage extends StatefulWidget {
-  final Entrada? entry;
+class FixaFormPage extends StatefulWidget {
+  final Fixa? item;
 
-  const EntradaFormPage({super.key, this.entry});
+  const FixaFormPage({super.key, this.item});
 
   @override
-  State<EntradaFormPage> createState() => _EntradaFormPageState();
+  State<FixaFormPage> createState() => _FixaFormPageState();
 }
 
-class _EntradaFormPageState extends State<EntradaFormPage> {
+class _FixaFormPageState extends State<FixaFormPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _descricaoController = TextEditingController();
   final _valorController = TextEditingController();
 
   DateTime? _dataSelecionada;
-  String _tipoSelecionado = 'Salário';
+  String _categoriaSelecionado = 'Saúde';
+  String _statusSelecionado = 'Pendente';
 
-  final List<String> tipos = [
-    'Salário',
-    'Investimento',
-    '13° Salário',
-    'Outros',
+  final List<String> status = ['Pendente', 'Pago'];
+
+  final List<String> categoria = [
+    'Beleza',
+    'Roupa',
+    'Saúde',
+    'Alimentação',
+    'Água',
+    'Internet',
+    'Pet',
+    'Tecnologia',
+    'Lazer',
+    'Esportes',
+    'Educação',
   ];
 
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
-  bool get isEditing => widget.entry != null;
+  bool get isEditing => widget.item != null;
 
   @override
   void initState() {
     super.initState();
 
-    if (isEditing) {
-      _dataSelecionada = widget.entry!.data;
-      _descricaoController.text = widget.entry!.descricao;
-      _valorController.text =
-          widget.entry!.valor.toStringAsFixed(2).replaceAll('.', ',');
-      _tipoSelecionado = widget.entry!.tipo;
+    if (widget.item != null) {
+      _dataSelecionada = widget.item!.vencimento;
+      _descricaoController.text = widget.item!.descricao;
+      _categoriaSelecionado = widget.item!.categoria;
+      _statusSelecionado = widget.item!.pago ? 'Pago' : 'Pendente';
+      _valorController.text = widget.item!.valor
+          .toStringAsFixed(2)
+          .replaceAll('.', ',');
     }
   }
 
@@ -71,67 +84,60 @@ class _EntradaFormPageState extends State<EntradaFormPage> {
 
     if (_dataSelecionada == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecione a data')),
+        const SnackBar(content: Text('Selecione a data de vencimento')),
       );
       return;
     }
 
-    final entrada = Entrada(
-      data: _dataSelecionada!,
+    final fixa = Fixa(
+      vencimento: _dataSelecionada!,
       descricao: _descricaoController.text.trim(),
+      categoria: _categoriaSelecionado,
       valor: double.parse(_valorController.text.replaceAll(',', '.')),
-      tipo: _tipoSelecionado,
-      indexRow: widget.entry?.indexRow ?? -1,
+      pago: _statusSelecionado == 'Pago',
+      indexRow: widget.item?.indexRow ?? -1,
     );
 
-    Navigator.pop(
-      context,
-      isEditing
-          ? FormResult<Entrada>.update(entrada)
-          : FormResult<Entrada>.create(entrada),
+    context.pop(
+      isEditing ? FormResult<Fixa>.update(fixa) : FormResult<Fixa>.create(fixa),
     );
   }
 
   void _excluir() {
-    Navigator.pop(
-      context,
-      FormResult<Entrada>.delete(widget.entry!.indexRow),
-    );
+    context.pop(FormResult<Fixa>.delete(widget.item!.indexRow));
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseFormPage(
-      title: isEditing ? 'Editar Entrada' : 'Nova Entrada',
+      title: isEditing ? 'Editar Saída Fixa' : 'Nova Saída Fixa',
       isEditing: isEditing,
       onSave: _salvar,
       onDelete: isEditing ? _excluir : null,
-      saveLabel: isEditing ? 'Salvar Alterações' : 'Salvar Entrada',
+      saveLabel: isEditing ? 'Salvar Alterações' : 'Salvar Saída Fixa',
 
-      /// 🔽 CONTEÚDO DO FORMULÁRIO
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// 🟢 TÍTULO INTERNO DO CARD
             Text(
               isEditing
-                  ? "Atualize os dados da entrada"
-                  : "Preencha as informações da entrada",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  ? "Editar informações da saída fixa"
+                  : "Preencha os dados da saída fixa",
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
 
             const SizedBox(height: 32),
 
-            /// 📅 DATA
+            /// 📅 Vencimento
             InkWell(
               onTap: _selecionarData,
               child: InputDecorator(
                 decoration: const InputDecoration(
-                  labelText: 'Data',
+                  labelText: 'Data de vencimento',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
@@ -143,9 +149,10 @@ class _EntradaFormPageState extends State<EntradaFormPage> {
                 ),
               ),
             ),
+
             const SizedBox(height: 12),
 
-            /// 📝 DESCRIÇÃO
+            /// 📝 Descrição
             TextFormField(
               controller: _descricaoController,
               decoration: const InputDecoration(
@@ -157,13 +164,15 @@ class _EntradaFormPageState extends State<EntradaFormPage> {
               validator: (v) =>
                   v == null || v.isEmpty ? 'Informe a descrição' : null,
             ),
+
             const SizedBox(height: 12),
 
-            /// 💰 VALOR
+            /// 💰 Valor
             TextFormField(
               controller: _valorController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Valor',
                 prefixText: 'R\$ ',
@@ -173,25 +182,41 @@ class _EntradaFormPageState extends State<EntradaFormPage> {
               ),
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Informe o valor';
-                final parsed = double.tryParse(v.replaceAll(',', '.'));
-                if (parsed == null) return 'Valor inválido';
-                if (parsed > 999999.99) {
-                  return 'Valor máximo permitido é R\$ 999.999,99';
+                if (double.tryParse(v.replaceAll(',', '.')) == null) {
+                  return 'Valor inválido';
                 }
                 return null;
               },
             ),
+
             const SizedBox(height: 12),
 
-            /// 🏷 TIPO
+            /// 🏷 Categoria
             DropdownButtonFormField<String>(
-              value: _tipoSelecionado,
-              items: tipos
+              value: _categoriaSelecionado,
+              items: categoria
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
-              onChanged: (v) => setState(() => _tipoSelecionado = v!),
+              onChanged: (v) => setState(() => _categoriaSelecionado = v!),
               decoration: const InputDecoration(
-                labelText: 'Tipo de entrada',
+                labelText: 'Categoria',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// 📌 Status
+            DropdownButtonFormField<String>(
+              value: _statusSelecionado,
+              items: status
+                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                  .toList(),
+              onChanged: (v) => setState(() => _statusSelecionado = v!),
+              decoration: const InputDecoration(
+                labelText: 'Status',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(16)),
                 ),

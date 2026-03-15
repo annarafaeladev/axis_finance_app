@@ -1,25 +1,20 @@
+import 'package:axis_finance_app/core/enum/form_action.dart';
 import 'package:axis_finance_app/features/finance/domain/entities/entrada.dart';
+import 'package:axis_finance_app/widgets/common/base_form_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class NewEntryModal extends StatefulWidget {
+class EntradaFormPage extends StatefulWidget {
   final Entrada? entry;
 
-  final void Function({
-    required DateTime data,
-    required String descricao,
-    required double valor,
-    required String tipo,
-  })
-  onSave;
-
-  const NewEntryModal({super.key, this.entry, required this.onSave});
+  const EntradaFormPage({super.key, this.entry});
 
   @override
-  State<NewEntryModal> createState() => _NewEntryModalState();
+  State<EntradaFormPage> createState() => _EntradaFormPageState();
 }
 
-class _NewEntryModalState extends State<NewEntryModal> {
+class _EntradaFormPageState extends State<EntradaFormPage> {
   final _formKey = GlobalKey<FormState>();
 
   final _descricaoController = TextEditingController();
@@ -37,18 +32,13 @@ class _NewEntryModalState extends State<NewEntryModal> {
 
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
-  @override
-  void dispose() {
-    _descricaoController.dispose();
-    _valorController.dispose();
-    super.dispose();
-  }
+  bool get isEditing => widget.entry != null;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.entry != null) {
+    if (isEditing) {
       _dataSelecionada = widget.entry!.data;
       _descricaoController.text = widget.entry!.descricao;
       _valorController.text = widget.entry!.valor
@@ -58,12 +48,17 @@ class _NewEntryModalState extends State<NewEntryModal> {
     }
   }
 
-  Future<void> _selecionarData() async {
-    final now = DateTime.now();
+  @override
+  void dispose() {
+    _descricaoController.dispose();
+    _valorController.dispose();
+    super.dispose();
+  }
 
+  Future<void> _selecionarData() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: _dataSelecionada ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -75,6 +70,7 @@ class _NewEntryModalState extends State<NewEntryModal> {
 
   void _salvar() {
     if (!_formKey.currentState!.validate()) return;
+
     if (_dataSelecionada == null) {
       ScaffoldMessenger.of(
         context,
@@ -82,39 +78,50 @@ class _NewEntryModalState extends State<NewEntryModal> {
       return;
     }
 
-    widget.onSave(
+    final entrada = Entrada(
       data: _dataSelecionada!,
       descricao: _descricaoController.text.trim(),
       valor: double.parse(_valorController.text.replaceAll(',', '.')),
       tipo: _tipoSelecionado,
+      indexRow: widget.entry?.indexRow ?? -1,
     );
 
-    Navigator.pop(context);
+    context.pop(
+      isEditing
+          ? FormResult<Entrada>.update(entrada)
+          : FormResult<Entrada>.create(entrada),
+    );
+  }
+
+  void _excluir() {
+    context.pop(FormResult<Entrada>.delete(widget.entry!.indexRow));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
+    return BaseFormPage(
+      title: isEditing ? 'Editar Entrada' : 'Nova Entrada',
+      isEditing: isEditing,
+      onSave: _salvar,
+      onDelete: isEditing ? _excluir : null,
+      saveLabel: isEditing ? 'Salvar Alterações' : 'Salvar Entrada',
+
       child: Form(
         key: _formKey,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.entry == null ? 'Nova Entrada' : 'Editar Entrada',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              isEditing
+                  ? "Atualize os dados da entrada"
+                  : "Preencha as informações da entrada",
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
 
-            /// 📅 Data
             InkWell(
               onTap: _selecionarData,
               child: InputDecorator(
@@ -131,10 +138,8 @@ class _NewEntryModalState extends State<NewEntryModal> {
                 ),
               ),
             ),
-
             const SizedBox(height: 12),
 
-            /// 📝 Descrição
             TextFormField(
               controller: _descricaoController,
               decoration: const InputDecoration(
@@ -146,10 +151,8 @@ class _NewEntryModalState extends State<NewEntryModal> {
               validator: (v) =>
                   v == null || v.isEmpty ? 'Informe a descrição' : null,
             ),
-
             const SizedBox(height: 12),
 
-            /// 💰 Valor
             TextFormField(
               controller: _valorController,
               keyboardType: const TextInputType.numberWithOptions(
@@ -164,21 +167,16 @@ class _NewEntryModalState extends State<NewEntryModal> {
               ),
               validator: (v) {
                 if (v == null || v.isEmpty) return 'Informe o valor';
-                if (double.tryParse(v.replaceAll(',', '.')) == null) {
-                  return 'Valor inválido';
-                }
-
-                if (double.parse(v) > 999999.99) {
+                final parsed = double.tryParse(v.replaceAll(',', '.'));
+                if (parsed == null) return 'Valor inválido';
+                if (parsed > 999999.99) {
                   return 'Valor máximo permitido é R\$ 999.999,99';
                 }
-
                 return null;
               },
             ),
-
             const SizedBox(height: 12),
 
-            /// 🏷 Tipo
             DropdownButtonFormField<String>(
               value: _tipoSelecionado,
               items: tipos
@@ -186,26 +184,9 @@ class _NewEntryModalState extends State<NewEntryModal> {
                   .toList(),
               onChanged: (v) => setState(() => _tipoSelecionado = v!),
               decoration: const InputDecoration(
-                labelText: 'Tipo entrada',
+                labelText: 'Tipo de entrada',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(16)),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF16A28C),
-                ),
-                onPressed: _salvar,
-                child: const Text(
-                  'Salvar Entrada',
-                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
